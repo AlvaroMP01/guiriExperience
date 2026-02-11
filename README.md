@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # GuiriExperience - Travel Booking Platform
 
 ## 🌍 Project Overview
@@ -147,3 +148,6 @@ The templates expect the following Flask routes:
 ---
 
 **Created by Group 1 - GuiriExperience Team**
+=======
+# guiriExperience
+>>>>>>> 86977553ed569ab90cfc4f9b48d0af0fb0319882
