@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Viajes en autobus</title>
+
+</head>
+
+<body>
+    <header>
+        <h1>GuiriExperience</h1>
+    </header>
+    <main>
+        <h2>Horarios y Rutas</h2>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>Origen</th>
+                    <th>Destino</th>
+                    <th>Salida</th>
+                    <th>Llegada</th>
+                    <th>Precio</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for autobus in autobuses %}
+                <tr>
+                    <td>{{ autobus.origen }}</td>
+                    <td>{{ autobus.destino }}</td>
+                    <td>{{ autobus.hora_salida }}</td>
+                    <td>{{ autobus.hora_llegada }}</td>
+                    <td>{{ autobus.precio }} €</td>xºxº
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="5">No hay trayectos disponibles hoy.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <br>
+
+        <h2>Comprar Billete</h2>
+        <form action="{{ url_for('book_ticket') }}" method="POST">
+            
+            <p>
+                <label for="autobus_id">Selecciona Trayecto:</label><br>
+                <select name="autobus_id" id="autobus_id" required style="padding: 5px;">
+                    <option value="">-- Elige origen y destino --</option>
+                    {% for autobus in autobuses %}
+                    <option value="{{ autobus.id }}">
+                        {{ autobus.origen }} -> {{ autobus.destino }} ({{ autobus.hora_salida }})
+                    </option>
+                    {% endfor %}
+                </select>
+            </p>
+
+            <p>
+                <label for="cantidad">Cantidad de Billetes:</label><br>
+                <input type="number" name="cantidad" id="cantidad" min="1" max="10" value="1" required>
+            </p>
+
+            <p>
+                <label for="asiento">Asiento:</label><br>
+                <select name="asiento" id="asiento">
+                    <option value="ventana">Ventana</option>
+                    <option value="pasillo">Pasillo</option>
+                </select>
+            </p>
+
+            <button type="submit">Reservar y Pagar</button>
+        </form>
+    </main>
+</body>
+
+</html>

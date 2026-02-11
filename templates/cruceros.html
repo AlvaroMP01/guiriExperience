@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cruceros</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            padding: 20px;
+        }
+
+        header {
+            background: #eee;
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+
+        nav a {
+            margin-right: 15px;
+            text-decoration: none;
+            color: blue;
+        }
+
+        /* Estilos básicos para tabla */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: left;
+        }
+
+        h2 {
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        button {
+            background-color: blue;
+            color: white;
+            padding: 8px 15px;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>Reserva de Cruceros</h1>
+        <nav>
+            <a href="{{ url_for('index') }}">Inicio</a>
+            {% if session.get('user_id') %}
+            <strong>{{ session.get('role') }}</strong> |
+            
+            {% if session.get('role') == 'ADMIN' %}
+            <a href="{{ url_for('admin_dashboard') }}">Dashboard</a>
+            <a href="{{ url_for('add_cruise') }}">Add Cruise</a>
+            <a href="{{ url_for('add_port') }}">Add Port</a>
+            <a href="{{ url_for('add_captain') }}">Add Captain</a>
+            {% endif %}
+            
+            {% if session.get('role') == 'CAPTAIN' %}
+            <a href="{{ url_for('captain_dashboard') }}">Dashboard</a>
+            <a href="{{ url_for('my_ships') }}">My Ships</a>
+            {% endif %}
+            
+            <a href="{{ url_for('reservations') }}">Reservations</a>
+            <a href="{{ url_for('logout') }}">Salir</a>
+            {% else %}
+            <a href="{{ url_for('login') }}">Login</a>
+            <a href="{{ url_for('register') }}">Registro</a>
+            {% endif %}
+        </nav>
+    </header>
+    
+    <main>
+        <h2>Itinerarios Disponibles</h2>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>Destino</th>
+                    <th>Barco</th>
+                    <th>Fecha Salida</th>
+                    <th>Duración</th>
+                    <th>Precio Base</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for crucero in cruceros %}
+                <tr>
+                    <td>{{ crucero.destino }}</td>
+                    <td>{{ crucero.barco }}</td>
+                    <td>{{ crucero.fecha_salida }}</td>
+                    <td>{{ crucero.duracion }} días</td>
+                    <td>{{ crucero.precio }} €</td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="5">No hay cruceros programados próximamente.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <br>
+
+        <h2>Reservar Camarote</h2>
+        <form action="{{ url_for('book_cruise') }}" method="POST">
+            
+            <p>
+                <label for="crucero_id">Selecciona Crucero:</label><br>
+                <select name="crucero_id" id="crucero_id" required style="padding: 5px;">
+                    <option value="">-- Elige destino y barco --</option>
+                    {% for crucero in cruceros %}
+                    <option value="{{ crucero.id }}">
+                        {{ crucero.destino }} - {{ crucero.barco }} ({{ crucero.fecha_salida }})
+                    </option>
+                    {% endfor %}
+                </select>
+            </p>
+
+            <p>
+                <label for="pasajeros">Número de Pasajeros:</label><br>
+                <input type="number" name="pasajeros" id="pasajeros" min="1" max="10" value="2" required>
+            </p>
+
+            <p>
+                <label for="tipo_camarote">Tipo de Camarote:</label><br>
+                <select name="tipo_camarote" id="tipo_camarote">
+                    <option value="interior">Interior (Precio Base)</option>
+                    <option value="exterior">Exterior (+100€)</option>
+                    <option value="balcon">Con Balcón (+250€)</option>
+                    <option value="suite">Suite (+500€)</option>
+                </select>
+            </p>
+
+            <button type="submit">Confirmar Reserva</button>
+        </form>
+    </main>
+</body>
+
+</html>

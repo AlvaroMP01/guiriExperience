@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tours - GuiriExperience</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            padding: 20px;
+        }
+
+        header {
+            background: #eee;
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+
+        nav a {
+            margin-right: 15px;
+            text-decoration: none;
+            color: blue;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>Reserva de Tours</h1>
+        <nav>
+            <a href="{{ url_for('index') }}">Inicio</a>
+            {% if session.get('user_id') %}
+            <strong>{{ session.get('role') }}</strong> |
+            {% if session.get('role') == 'ADMIN' %}
+            <a href="{{ url_for('admin_dashboard') }}">Admin Dashboard</a>
+            <a href="{{ url_for('add_tour') }}">Add Tour</a>
+            <a href="{{ url_for('add_tour_category') }}">Add Tour Category</a>
+            <a href="{{ url_for('add_tour_guide') }}">Add Tour Guide</a>
+
+            {% endif %}
+            {% if session.get('role') == 'TOUR_GUIDE' %}
+            <a href="{{ url_for('tour_guide_dashboard') }}">Tour Guide Dashboard</a>
+            <a href="{{ url_for('tour_guide_guides') }}">Guides</a>
+            {% endif %}
+            <a href="{{ url_for('reservations') }}">Reservations</a>
+            <a href="{{ url_for('logout') }}">Salir</a>
+            {% else %}
+            <a href="{{ url_for('login') }}">Login</a>
+            <a href="{{ url_for('register') }}">Registro</a>
+            {% endif %}
+        </nav>
+    </header>
+    <main>
+        <h2>Disponibilidad de Tours</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Categoría</th>
+                    <th>Guía</th>
+                    <th>Fecha</th>
+                    <th>Hora</th>
+                    <th>Precio</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for tour in tours %}
+                <tr>
+                    <td>{{ tour.nombre }}</td>
+                    <td>{{ tour.categoria }}</td>
+                    <td>{{ tour.guia }}</td>
+                    <td>{{ tour.fecha }}</td>
+                    <td>{{ tour.hora }}</td>
+                    <td>{{ tour.precio }} €</td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="6">No hay tours disponibles hoy.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </main>
+</body>
+
+</html>

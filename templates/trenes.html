@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trenes</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            padding: 20px;
+        }
+
+        header {
+            background: #eee;
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+
+        nav a {
+            margin-right: 15px;
+            text-decoration: none;
+            color: blue;
+        }
+
+        /* Estilos básicos para que la tabla de horarios se entienda */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: left;
+        }
+
+        h2 {
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        button {
+            background-color: blue;
+            color: white;
+            padding: 8px 15px;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>Reserva de Trenes🚆</h1>
+        <nav>
+            <a href="{{ url_for('index') }}">Inicio🏠</a>
+            {% if session.get('user_id') %}
+            <strong>{{ session.get('role') }}</strong> |
+            
+            {% if session.get('role') == 'ADMIN' %}
+            <a href="{{ url_for('admin_dashboard') }}">Dashboard👑</a>
+            <a href="{{ url_for('add_train') }}">Add Train➕</a>
+            <a href="{{ url_for('add_station') }}">Add Station➕</a>
+            <a href="{{ url_for('add_conductor') }}">Add Conductor➕</a>
+            {% endif %}
+            
+            {% if session.get('role') == 'CONDUCTOR' %}
+            <a href="{{ url_for('conductor_dashboard') }}">Dashboard</a>
+            <a href="{{ url_for('my_routes') }}">My Routes</a>
+            {% endif %}
+            
+            <a href="{{ url_for('reservations') }}">Reservations</a>
+            <a href="{{ url_for('logout') }}">Salir</a>
+            {% else %}
+            <a href="{{ url_for('login') }}">Login</a>
+            <a href="{{ url_for('register') }}">Registro</a>
+            {% endif %}
+        </nav>
+    </header>
+    
+    <main>
+        <h2>Horarios y Rutas</h2>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>Origen</th>
+                    <th>Destino</th>
+                    <th>Salida</th>
+                    <th>Llegada</th>
+                    <th>Precio</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for tren in trenes %}
+                <tr>
+                    <td>{{ tren.origen }}</td>
+                    <td>{{ tren.destino }}</td>
+                    <td>{{ tren.hora_salida }}</td>
+                    <td>{{ tren.hora_llegada }}</td>
+                    <td>{{ tren.precio }} €</td>xºxº
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="5">No hay trayectos disponibles hoy.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <br>
+
+        <h2>Comprar Billete</h2>
+        <form action="{{ url_for('book_ticket') }}" method="POST">
+            
+            <p>
+                <label for="tren_id">Selecciona Trayecto:</label><br>
+                <select name="tren_id" id="tren_id" required style="padding: 5px;">
+                    <option value="">-- Elige origen y destino --</option>
+                    {% for tren in trenes %}
+                    <option value="{{ tren.id }}">
+                        {{ tren.origen }} -> {{ tren.destino }} ({{ tren.hora_salida }})
+                    </option>
+                    {% endfor %}
+                </select>
+            </p>
+
+            <p>
+                <label for="cantidad">Cantidad de Billetes:</label><br>
+                <input type="number" name="cantidad" id="cantidad" min="1" max="10" value="1" required>
+            </p>
+
+            <p>
+                <label for="clase">Clase:</label><br>
+                <select name="clase" id="clase">
+                    <option value="turista">Turista</option>
+                    <option value="turista_plus">Turista Plus (+15€)</option>
+                    <option value="preferente">Preferente (+30€)</option>
+                </select>
+            </p>
+
+            <button type="submit">Reservar y Pagar</button>
+        </form>
+    </main>
+</body>
+
+</html>
