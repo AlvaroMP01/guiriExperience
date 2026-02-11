@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tours - GuiriExperience</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        h1 {
+            color: #667eea;
+            font-size: 2em;
+        }
+
+        nav a {
+            margin-left: 20px;
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        nav a:hover {
+            color: #667eea;
+        }
+
+        .user-info {
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        main {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 20px;
+        }
+
+        .section {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        .search-bar {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr auto;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .search-bar input,
+        .search-bar select {
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1em;
+        }
+
+        .search-bar button {
+            padding: 12px 25px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: transform 0.3s;
+        }
+
+        .search-bar button:hover {
+            transform: scale(1.05);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th,
+        td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background: #667eea;
+            color: white;
+            font-weight: bold;
+        }
+
+        tr:hover {
+            background: #f9f9f9;
+        }
+
+        .btn-book {
+            background: #4CAF50;
+            color: white;
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .btn-book:hover {
+            background: #45a049;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="header-content">
+            <h1>🎫 Tours Booking</h1>
+            <nav>
+                <a href="{{ url_for('index') }}">🏠 Home</a>
+                {% if session.get('user_id') %}
+                <span class="user-info">{{ session.get('role') }}</span> |
+                {% if session.get('role') in ['ADMIN', 'TOUR_SELLER'] %}
+                <a href="{{ url_for('admin_tours') }}">Admin Panel</a>
+                {% endif %}
+                <a href="{{ url_for('reservations') }}">My Reservations</a>
+                <a href="{{ url_for('logout') }}">Logout</a>
+                {% else %}
+                <a href="{{ url_for('login') }}">Login</a>
+                <a href="{{ url_for('register') }}">Register</a>
+                {% endif %}
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <!-- Search Section -->
+        <div class="section">
+            <h2>🔍 Search Tours</h2>
+            <div class="search-bar">
+                <input type="text" id="search-name" placeholder="Search by name or guide...">
+                <select id="search-category">
+                    <option value="">All Categories</option>
+                    <option value="cultural">Cultural</option>
+                    <option value="adventure">Adventure</option>
+                    <option value="gastronomic">Gastronomic</option>
+                    <option value="historical">Historical</option>
+                    <option value="nature">Nature</option>
+                </select>
+                <input type="date" id="search-date">
+                <button onclick="searchTours()">Search</button>
+            </div>
+        </div>
+
+        <!-- Tours List -->
+        <div class="section">
+            <h2>📋 Available Tours</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Category</th>
+                        <th>Guide</th>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Price</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for tour in tours %}
+                    <tr>
+                        <td>{{ tour.name }}</td>
+                        <td>{{ tour.category }}</td>
+                        <td>{{ tour.guide }}</td>
+                        <td>{{ tour.date }}</td>
+                        <td>{{ tour.time }}</td>
+                        <td>{{ tour.price }} €</td>
+                        <td>
+                            <button class="btn-book" onclick="bookTour({{ tour.id }})">Book Now</button>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="7" style="text-align: center;">No tours available today.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <script>
+        function searchTours() {
+            const name = document.getElementById('search-name').value.toLowerCase();
+            const category = document.getElementById('search-category').value.toLowerCase();
+            const date = document.getElementById('search-date').value;
+
+            const rows = document.querySelectorAll('tbody tr');
+
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                const rowCategory = row.cells[1]?.textContent.toLowerCase();
+                const rowDate = row.cells[3]?.textContent;
+
+                let show = true;
+
+                if (name && !text.includes(name)) show = false;
+                if (category && rowCategory !== category) show = false;
+                if (date && rowDate !== date) show = false;
+
+                row.style.display = show ? '' : 'none';
+            });
+        }
+
+        function bookTour(id) {
+            window.location.href = `/tours/${id}/book`;
+        }
+
+        // Real-time search
+        document.getElementById('search-name').addEventListener('input', searchTours);
+        document.getElementById('search-category').addEventListener('change', searchTours);
+        document.getElementById('search-date').addEventListener('change', searchTours);
+    </script>
+</body>
+
+</html>

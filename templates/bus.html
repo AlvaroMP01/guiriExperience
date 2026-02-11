@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bus Travel - GuiriExperience</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            min-height: 100vh;
+        }
+
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        h1 {
+            color: #f5576c;
+            font-size: 2em;
+        }
+
+        nav a {
+            margin-left: 20px;
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        nav a:hover {
+            color: #f5576c;
+        }
+
+        .user-info {
+            color: #f5576c;
+            font-weight: bold;
+        }
+
+        main {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 20px;
+        }
+
+        .section {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        h2 {
+            color: #f5576c;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+            border-bottom: 3px solid #f5576c;
+            padding-bottom: 10px;
+        }
+
+        .search-bar {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr auto;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .search-bar input,
+        .search-bar select {
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1em;
+        }
+
+        .search-bar button {
+            padding: 12px 25px;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: transform 0.3s;
+        }
+
+        .search-bar button:hover {
+            transform: scale(1.05);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th,
+        td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background: #f5576c;
+            color: white;
+            font-weight: bold;
+        }
+
+        tr:hover {
+            background: #f9f9f9;
+        }
+
+        .booking-form {
+            background: #f9f9f9;
+            padding: 25px;
+            border-radius: 10px;
+            margin-top: 30px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        input,
+        select {
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1em;
+        }
+
+        .btn-submit {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+
+        .btn-submit:hover {
+            transform: scale(1.02);
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="header-content">
+            <h1>🚌 Bus Travel</h1>
+            <nav>
+                <a href="{{ url_for('index') }}">🏠 Home</a>
+                {% if session.get('user_id') %}
+                <span class="user-info">{{ session.get('role') }}</span> |
+                {% if session.get('role') in ['ADMIN', 'BUS_SELLER'] %}
+                <a href="{{ url_for('admin_buses') }}">Admin Panel</a>
+                {% endif %}
+                <a href="{{ url_for('reservations') }}">My Reservations</a>
+                <a href="{{ url_for('logout') }}">Logout</a>
+                {% else %}
+                <a href="{{ url_for('login') }}">Login</a>
+                <a href="{{ url_for('register') }}">Register</a>
+                {% endif %}
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <!-- Search Section -->
+        <div class="section">
+            <h2>🔍 Search Routes</h2>
+            <div class="search-bar">
+                <input type="text" id="search-origin" placeholder="Origin city...">
+                <input type="text" id="search-destination" placeholder="Destination city...">
+                <input type="time" id="search-time" placeholder="Departure time">
+                <button onclick="searchBuses()">Search</button>
+            </div>
+        </div>
+
+        <!-- Routes List -->
+        <div class="section">
+            <h2>📋 Schedules and Routes</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Origin</th>
+                        <th>Destination</th>
+                        <th>Departure</th>
+                        <th>Arrival</th>
+                        <th>Price</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for bus in buses %}
+                    <tr>
+                        <td>{{ bus.origin }}</td>
+                        <td>{{ bus.destination }}</td>
+                        <td>{{ bus.departure_time }}</td>
+                        <td>{{ bus.arrival_time }}</td>
+                        <td>{{ bus.price }} €</td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="5" style="text-align: center;">No routes available today.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Booking Form -->
+        <div class="section">
+            <h2>🎟️ Buy Ticket</h2>
+            <form action="{{ url_for('book_bus_ticket') }}" method="POST" class="booking-form">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="bus_id">Select Route *</label>
+                        <select name="bus_id" id="bus_id" required>
+                            <option value="">-- Choose origin and destination --</option>
+                            {% for bus in buses %}
+                            <option value="{{ bus.id }}">
+                                {{ bus.origin }} → {{ bus.destination }} ({{ bus.departure_time }})
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="quantity">Number of Tickets *</label>
+                        <input type="number" name="quantity" id="quantity" min="1" max="10" value="1" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="seat_preference">Seat Preference</label>
+                        <select name="seat_preference" id="seat_preference">
+                            <option value="window">Window</option>
+                            <option value="aisle">Aisle</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-submit">Reserve and Pay</button>
+            </form>
+        </div>
+    </main>
+
+    <script>
+        function searchBuses() {
+            const origin = document.getElementById('search-origin').value.toLowerCase();
+            const destination = document.getElementById('search-destination').value.toLowerCase();
+            const time = document.getElementById('search-time').value;
+
+            const rows = document.querySelectorAll('tbody tr');
+
+            rows.forEach(row => {
+                const rowOrigin = row.cells[0]?.textContent.toLowerCase();
+                const rowDestination = row.cells[1]?.textContent.toLowerCase();
+                const rowTime = row.cells[2]?.textContent;
+
+                let show = true;
+
+                if (origin && !rowOrigin.includes(origin)) show = false;
+                if (destination && !rowDestination.includes(destination)) show = false;
+                if (time && rowTime !== time) show = false;
+
+                row.style.display = show ? '' : 'none';
+            });
+        }
+
+        // Real-time search
+        document.getElementById('search-origin').addEventListener('input', searchBuses);
+        document.getElementById('search-destination').addEventListener('input', searchBuses);
+        document.getElementById('search-time').addEventListener('change', searchBuses);
+    </script>
+</body>
+
+</html>
