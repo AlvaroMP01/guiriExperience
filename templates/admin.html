@@ -376,6 +376,44 @@
                         </tr>
                     </thead>
                     <tbody>
+                        <!-- Sample Data for Demo -->
+                        <tr>
+                            <td>Madrid City Tour</td>
+                            <td>Cultural</td>
+                            <td>Carlos García</td>
+                            <td>2024-03-15</td>
+                            <td>10:00</td>
+                            <td>45.00 €</td>
+                            <td>
+                                <button class="btn btn-edit" onclick="editItem('tour', 1)">Edit</button>
+                                <button class="btn btn-delete" onclick="deleteItem('tour', 1)">Delete</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Flamenco Experience</td>
+                            <td>Cultural</td>
+                            <td>María López</td>
+                            <td>2024-03-16</td>
+                            <td>20:00</td>
+                            <td>65.00 €</td>
+                            <td>
+                                <button class="btn btn-edit" onclick="editItem('tour', 2)">Edit</button>
+                                <button class="btn btn-delete" onclick="deleteItem('tour', 2)">Delete</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Tapas & Wine Tour</td>
+                            <td>Gastronomic</td>
+                            <td>Juan Martínez</td>
+                            <td>2024-03-17</td>
+                            <td>19:00</td>
+                            <td>55.00 €</td>
+                            <td>
+                                <button class="btn btn-edit" onclick="editItem('tour', 3)">Edit</button>
+                                <button class="btn btn-delete" onclick="deleteItem('tour', 3)">Delete</button>
+                            </td>
+                        </tr>
+                        <!-- When connected to Flask, use this instead:
                         {% for tour in tours %}
                         <tr>
                             <td>{{ tour.name }}</td>
@@ -386,8 +424,7 @@
                             <td>{{ tour.price }} €</td>
                             <td>
                                 <button class="btn btn-edit" onclick="editItem('tour', {{ tour.id }})">Edit</button>
-                                <button class="btn btn-delete"
-                                    onclick="deleteItem('tour', {{ tour.id }})">Delete</button>
+                                <button class="btn btn-delete" onclick="deleteItem('tour', {{ tour.id }})">Delete</button>
                             </td>
                         </tr>
                         {% else %}
@@ -395,6 +432,7 @@
                             <td colspan="7" style="text-align: center;">No tours available</td>
                         </tr>
                         {% endfor %}
+                        -->
                     </tbody>
                 </table>
             </div>
@@ -447,6 +485,30 @@
                         </tr>
                     </thead>
                     <tbody>
+                        <!-- Sample Data for Demo -->
+                        <tr>
+                            <td>Mediterranean Paradise</td>
+                            <td>Ocean Dream</td>
+                            <td>2024-04-10</td>
+                            <td>7 days</td>
+                            <td>899.00 €</td>
+                            <td>
+                                <button class="btn btn-edit" onclick="editItem('cruise', 1)">Edit</button>
+                                <button class="btn btn-delete" onclick="deleteItem('cruise', 1)">Delete</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Caribbean Adventure</td>
+                            <td>Sea Explorer</td>
+                            <td>2024-05-15</td>
+                            <td>10 days</td>
+                            <td>1299.00 €</td>
+                            <td>
+                                <button class="btn btn-edit" onclick="editItem('cruise', 2)">Edit</button>
+                                <button class="btn btn-delete" onclick="deleteItem('cruise', 2)">Delete</button>
+                            </td>
+                        </tr>
+                        <!-- Flask template (commented for demo):
                         {% for cruise in cruises %}
                         <tr>
                             <td>{{ cruise.destination }}</td>
@@ -456,8 +518,7 @@
                             <td>{{ cruise.price }} €</td>
                             <td>
                                 <button class="btn btn-edit" onclick="editItem('cruise', {{ cruise.id }})">Edit</button>
-                                <button class="btn btn-delete"
-                                    onclick="deleteItem('cruise', {{ cruise.id }})">Delete</button>
+                                <button class="btn btn-delete" onclick="deleteItem('cruise', {{ cruise.id }})">Delete</button>
                             </td>
                         </tr>
                         {% else %}
@@ -465,6 +526,7 @@
                             <td colspan="6" style="text-align: center;">No cruises available</td>
                         </tr>
                         {% endfor %}
+                        -->
                     </tbody>
                 </table>
             </div>
@@ -517,6 +579,30 @@
                         </tr>
                     </thead>
                     <tbody>
+                        <!-- Sample Data for Demo -->
+                        <tr>
+                            <td>Madrid</td>
+                            <td>Barcelona</td>
+                            <td>08:00</td>
+                            <td>14:30</td>
+                            <td>35.00 €</td>
+                            <td>
+                                <button class="btn btn-edit" onclick="editItem('bus', 1)">Edit</button>
+                                <button class="btn btn-delete" onclick="deleteItem('bus', 1)">Delete</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Seville</td>
+                            <td>Granada</td>
+                            <td>10:30</td>
+                            <td>13:45</td>
+                            <td>22.00 €</td>
+                            <td>
+                                <button class="btn btn-edit" onclick="editItem('bus', 2)">Edit</button>
+                                <button class="btn btn-delete" onclick="deleteItem('bus', 2)">Delete</button>
+                            </td>
+                        </tr>
+                        <!-- Flask template (commented for demo):
                         {% for bus in buses %}
                         <tr>
                             <td>{{ bus.origin }}</td>
@@ -534,6 +620,7 @@
                             <td colspan="6" style="text-align: center;">No bus routes available</td>
                         </tr>
                         {% endfor %}
+                        -->
                     </tbody>
                 </table>
             </div>
@@ -586,6 +673,30 @@
                         </tr>
                     </thead>
                     <tbody>
+                        <!-- Sample Data for Demo -->
+                        <tr>
+                            <td>Madrid</td>
+                            <td>Valencia</td>
+                            <td>07:30</td>
+                            <td>09:25</td>
+                            <td>42.00 €</td>
+                            <td>
+                                <button class="btn btn-edit" onclick="editItem('train', 1)">Edit</button>
+                                <button class="btn btn-delete" onclick="deleteItem('train', 1)">Delete</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Barcelona</td>
+                            <td>Zaragoza</td>
+                            <td>15:00</td>
+                            <td>16:30</td>
+                            <td>28.00 €</td>
+                            <td>
+                                <button class="btn btn-edit" onclick="editItem('train', 2)">Edit</button>
+                                <button class="btn btn-delete" onclick="deleteItem('train', 2)">Delete</button>
+                            </td>
+                        </tr>
+                        <!-- Flask template (commented for demo):
                         {% for train in trains %}
                         <tr>
                             <td>{{ train.origin }}</td>
@@ -595,8 +706,7 @@
                             <td>{{ train.price }} €</td>
                             <td>
                                 <button class="btn btn-edit" onclick="editItem('train', {{ train.id }})">Edit</button>
-                                <button class="btn btn-delete"
-                                    onclick="deleteItem('train', {{ train.id }})">Delete</button>
+                                <button class="btn btn-delete" onclick="deleteItem('train', {{ train.id }})">Delete</button>
                             </td>
                         </tr>
                         {% else %}
@@ -604,6 +714,7 @@
                             <td colspan="6" style="text-align: center;">No train routes available</td>
                         </tr>
                         {% endfor %}
+                        -->
                     </tbody>
                 </table>
             </div>
