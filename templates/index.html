@@ -173,14 +173,11 @@
         <div class="header-content">
             <h1>🌍 GuiriExperience</h1>
             <nav>
-                {% if session.get('user_id') %}
-                <span class="user-info">{{ session.get('role') }}</span> |
-                <a href="{{ url_for('reservations') }}">My Reservations</a>
-                <a href="{{ url_for('logout') }}">Logout</a>
-                {% else %}
-                <a href="{{ url_for('login') }}">Login</a>
-                <a href="{{ url_for('register') }}">Register</a>
-                {% endif %}
+                <a href="{{ url_for('tours') }}">Tours</a>
+                <a href="{{ url_for('cruises') }}">Cruises</a>
+                <a href="{{ url_for('buses') }}">Buses</a>
+                <a href="{{ url_for('trains') }}">Trains</a>
+                <a href="{{ url_for('admin') }}">Admin Panel</a>
             </nav>
         </div>
     </header>
@@ -221,14 +218,6 @@
             </div>
         </div>
 
-        {% if session.get('role') in ['ADMIN', 'SELLER'] %}
-        <div class="admin-section">
-            <h3>👨‍💼 Admin Panel</h3>
-            <div class="admin-links">
-                <a href="{{ url_for('admin') }}" class="admin-btn">⚙️ Manage All Services</a>
-            </div>
-        </div>
-        {% endif %}
     </main>
 </body>
 
