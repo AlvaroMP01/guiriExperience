@@ -1,0 +1,3 @@
+# Ignore db data files
+models.py
+seed.py

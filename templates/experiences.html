@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2 style="margin-bottom: 2rem;">Culinary Experiences</h2>
+
+<div class="grid">
+    {% for exp in experiences %}
+    <div class="card">
+        <img src="{{ url_for('static', filename='uploads/' + exp.imagen) if exp.imagen else 'https://images.unsplash.com/photo-1559339352-11d035aa65de?auto=format&fit=crop&w=600' }}"
+            alt="{{ exp.titulo }}">
+        <div class="card-content">
+            <span class="badge">{{ exp.ubicacion }}</span>
+            <h3>{{ exp.titulo }}</h3>
+            <p>{{ exp.descripcion }}</p>
+            <p style="font-weight: bold; font-size: 1.2rem; color: var(--secondary); margin-top: 1rem;">{{ exp.precio
+                }}€ / person</p>
+            <a href="{{ url_for('experience_detail', id=exp.id) }}" class="btn">Book Now</a>
+        </div>
+    </div>
+    {% else %}
+    <p>No experiences available at the moment.</p>
+    {% endfor %}
+</div>
+{% endblock %}

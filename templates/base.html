@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GuiriExperience - Integrated Tourism</title>
+    <!-- CSS from Group 2 -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <!-- CSS from Group 1 (assuming it exists or was inline, we'll try to link it if present) -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    {% block head %}{% endblock %}
+</head>
+
+<body>
+    <header>
+        <h1>GuiriExperience</h1>
+        <p>Your comprehensive tourism portal</p>
+    </header>
+
+    <nav>
+        <a href="{{ url_for('index') }}">Home</a>
+        <!-- Group 1 Links -->
+        <a href="{{ url_for('tours') }}">Tours</a>
+        <a href="{{ url_for('cruises') }}">Cruises</a>
+        <a href="{{ url_for('buses') }}">Buses</a>
+        <a href="{{ url_for('trains') }}">Trains</a>
+        <!-- Group 2 Links -->
+        <a href="{{ url_for('list_experiences') }}">Experiences</a>
+        <a href="{{ url_for('list_hotels') }}">Hotels</a>
+        <a href="{{ url_for('list_houses') }}">Rental Houses</a>
+        
+        <div class="nav-right" style="float: right;">
+            <a href="{{ url_for('reservations') }}">My Bookings</a>
+            <a href="{{ url_for('admin') }}">Admin</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            <div class="flashes">
+            {% for category, message in messages %}
+              <div class="alert alert-{{ category }}">{{ message }}</div>
+            {% endfor %}
+            </div>
+          {% endif %}
+        {% endwith %}
+        
+        {% block content %}{% endblock %}
+    </div>
+
+    <footer style="text-align: center; padding: 2rem; background: #333; color: white; margin-top: 4rem;">
+        <p>&copy; 2026 GuiriExperience Team - Integrated Tourism Project</p>
+    </footer>
+</body>
+
+</html>

@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto px-6 py-8">
+    <div class="bg-white dark:bg-[#2d2417] rounded-3xl shadow-xl border border-[#eadecd] overflow-hidden">
+        <div class="bg-primary p-8 text-center text-white">
+            <h2 class="text-3xl font-bold mb-2">{{ title }}</h2>
+            <p class="opacity-90">Complete los campos para {{ title.lower() }}</p>
+        </div>
+
+        <form method="POST" class="p-8 space-y-8">
+            <!-- Account Info -->
+            <div class="space-y-6 pb-8 border-b border-gray-100 dark:border-gray-800">
+                <h3 class="text-sm font-bold text-gray-400 uppercase tracking-wider mb-6">Información de la Cuenta</h3>
+
+                <div>
+                    <label for="username" class="block text-sm font-bold text-gray-700 dark:text-gray-200 mb-2">Nombre
+                        de Usuario</label>
+                    <div class="relative">
+                        <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                            <span class="material-symbols-outlined text-gray-400">person</span>
+                        </div>
+                        <input type="text" id="username" name="username" value="{{ user.username if user else '' }}"
+                            placeholder="Ej. juanperez" required
+                            class="block w-full rounded-xl border-0 py-3 pl-10 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 dark:bg-[#1a140b] dark:ring-gray-700 dark:text-white">
+                    </div>
+                </div>
+
+                <div>
+                    <label for="password" class="block text-sm font-bold text-gray-700 dark:text-gray-200 mb-2">
+                        Contraseña
+                        {% if user %}
+                        <span class="text-xs font-normal text-gray-400 ml-2">(opcional)</span>
+                        {% endif %}
+                    </label>
+                    <div class="relative">
+                        <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                            <span class="material-symbols-outlined text-gray-400">lock</span>
+                        </div>
+                        <input type="password" id="password" name="password" placeholder="••••••••" {{ 'required' if not
+                            user else '' }}
+                            class="block w-full rounded-xl border-0 py-3 pl-10 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 dark:bg-[#1a140b] dark:ring-gray-700 dark:text-white">
+                    </div>
+                    {% if user %}
+                    <p class="mt-2 text-xs text-gray-500">Dejar en blanco para mantener la contraseña actual</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Permissions -->
+            <div class="space-y-6">
+                <h3 class="text-sm font-bold text-gray-400 uppercase tracking-wider mb-6">Permisos y Accesos</h3>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <label class="cursor-pointer relative">
+                        <input type="radio" name="role" value="usuario" class="peer sr-only" {% if not user or (user and
+                            user.role=='usuario' ) %}checked{% endif %}>
+                        <div
+                            class="p-4 rounded-xl border-2 border-gray-200 hover:border-gray-300 dark:border-gray-700 peer-checked:border-primary peer-checked:bg-primary/5 transition-all text-center h-full flex flex-col items-center justify-center gap-2">
+                            <span class="text-3xl">👤</span>
+                            <span class="font-bold text-gray-900 dark:text-white block">Usuario</span>
+                            <span class="text-xs text-gray-500 block">Acceso básico a la plataforma</span>
+                        </div>
+                    </label>
+
+                    <label class="cursor-pointer relative">
+                        <input type="radio" name="role" value="ADMIN1" class="peer sr-only" {% if user and
+                            user.role=='ADMIN1' %}checked{% endif %}>
+                        <div
+                            class="p-4 rounded-xl border-2 border-gray-200 hover:border-gray-300 dark:border-gray-700 peer-checked:border-primary peer-checked:bg-primary/5 transition-all text-center h-full flex flex-col items-center justify-center gap-2">
+                            <span class="text-3xl">🛡️</span>
+                            <span class="font-bold text-gray-900 dark:text-white block">Admin Usuarios</span>
+                            <span class="text-xs text-gray-500 block">Gestión total de usuarios</span>
+                        </div>
+                    </label>
+
+                    <label class="cursor-pointer relative">
+                        <input type="radio" name="role" value="ADMIN2" class="peer sr-only" {% if user and
+                            user.role=='ADMIN2' %}checked{% endif %}>
+                        <div
+                            class="p-4 rounded-xl border-2 border-gray-200 hover:border-gray-300 dark:border-gray-700 peer-checked:border-primary peer-checked:bg-primary/5 transition-all text-center h-full flex flex-col items-center justify-center gap-2">
+                            <span class="text-3xl">🌟</span>
+                            <span class="font-bold text-gray-900 dark:text-white block">Admin Experiencias</span>
+                            <span class="text-xs text-gray-500 block">Control de experiencias</span>
+                        </div>
+                    </label>
+
+                    <label class="cursor-pointer relative">
+                        <input type="radio" name="role" value="ADMIN3" class="peer sr-only" {% if user and
+                            user.role=='ADMIN3' %}checked{% endif %}>
+                        <div
+                            class="p-4 rounded-xl border-2 border-gray-200 hover:border-gray-300 dark:border-gray-700 peer-checked:border-primary peer-checked:bg-primary/5 transition-all text-center h-full flex flex-col items-center justify-center gap-2">
+                            <span class="text-3xl">🚌</span>
+                            <span class="font-bold text-gray-900 dark:text-white block">Admin Tours</span>
+                            <span class="text-xs text-gray-500 block">Gestión de tours</span>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="flex items-center justify-end gap-4 pt-8 border-t border-gray-100 dark:border-gray-800">
+                <a href="{{ url_for('admin_dashboard_users') }}"
+                    class="px-6 py-3 rounded-full font-bold text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">Cancelar</a>
+                <button type="submit"
+                    class="flex items-center gap-2 bg-primary text-white px-8 py-3 rounded-full font-bold hover:scale-105 transition-transform shadow-lg shadow-primary/20">
+                    Guardar Cambios
+                    <span class="material-symbols-outlined text-sm">arrow_forward</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
