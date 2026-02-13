@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Viajes Mundo - Tu Agencia de Viajes</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#ff9500",
+                        "background-light": "#f8f7f5",
+                        "background-dark": "#231b0f",
+                    },
+                    fontFamily: {
+                        "display": ["Plus Jakarta Sans", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+    {% block style %}{% endblock %}
+</head>
+
+<body class="bg-background-light dark:bg-background-dark text-[#1d160c] dark:text-white transition-colors duration-300">
+    <div class="relative flex min-h-screen w-full flex-col overflow-x-hidden">
+        <!-- Header / TopNavBar -->
+        <header
+            class="sticky top-0 z-50 w-full border-b border-solid border-[#eadecd] bg-white/80 backdrop-blur-md dark:bg-background-dark/80 px-6 lg:px-20 py-4">
+            <div class="mx-auto flex max-w-[1400px] items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-white">
+                        <span class="material-symbols-outlined text-2xl">travel_explore</span>
+                    </div>
+                    <h2 class="text-xl font-extrabold tracking-tight text-[#1d160c] dark:text-white">Viajes Mundo</h2>
+                </div>
+
+                <nav class="hidden flex-1 justify-center gap-10 md:flex">
+                    <a class="text-sm font-semibold hover:text-primary transition-colors"
+                        href="{{ url_for('home') }}">Inicio</a>
+                    <a class="text-sm font-semibold hover:text-primary transition-colors"
+                        href="{{ url_for('perfil') }}">Perfil</a>
+                    {% if current_user.is_authenticated and current_user.role in ['ADMIN1', 'ADMIN2', 'ADMIN3'] %}
+                    <a class="text-sm font-semibold hover:text-primary transition-colors"
+                        href="{{ url_for('dashboard') }}">Panel de Admin</a>
+                    {% endif %}
+                    {% if current_user.is_authenticated %}
+                    <a class="text-sm font-semibold hover:text-primary transition-colors"
+                        href="{{ url_for('logout') }}">Cerrar Sesión</a>
+                    {% endif %}
+                </nav>
+
+                <div class="flex items-center gap-4">
+                    {% if not current_user.is_authenticated %}
+                    <a href="{{ url_for('login') }}"
+                        class="flex h-10 items-center justify-center rounded-full bg-primary px-6 text-sm font-bold text-white shadow-lg shadow-primary/20 hover:scale-105 active:scale-95 transition-all">
+                        Login
+                    </a>
+                    {% else %}
+                    <div class="flex items-center gap-2">
+                        <span class="text-sm font-bold hidden md:block">{{ current_user.username }}</span>
+                        <div
+                            class="h-10 w-10 overflow-hidden rounded-full border-2 border-primary/20 bg-cover bg-center bg-gray-200 flex items-center justify-center text-primary font-bold">
+                            {{ current_user.username[0] | upper }}
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </header>
+
+        <main class="flex-1">
+            <!-- Flash Messages -->
+            <div class="mx-auto max-w-[1400px] px-6 lg:px-20 pt-4">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                {% for category, message in messages %}
+                <div
+                    class="mb-4 rounded-lg p-4 {% if category == 'success' %}bg-green-100 text-green-700{% elif category == 'error' %}bg-red-100 text-red-700{% else %}bg-blue-100 text-blue-700{% endif %}">
+                    {{ message }}
+                </div>
+                {% endfor %}
+                {% endif %}
+                {% endwith %}
+            </div>
+
+            {% block content %}
+            {% endblock %}
+        </main>
+
+        <!-- Footer -->
+        <footer class="mt-12 bg-white dark:bg-[#1a140b] px-6 py-16 border-t border-[#eadecd] lg:px-20">
+            <div class="mx-auto max-w-[1400px]">
+                <div class="grid grid-cols-1 gap-12 lg:grid-cols-4">
+                    <div class="space-y-6">
+                        <div class="flex items-center gap-3">
+                            <div class="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-white">
+                                <span class="material-symbols-outlined text-lg">travel_explore</span>
+                            </div>
+                            <h2 class="text-lg font-bold">Viajes Mundo</h2>
+                        </div>
+                        <p class="text-sm text-gray-500 leading-relaxed">
+                            Llevamos más de 15 años haciendo realidad los sueños de miles de viajeros en todo el mundo.
+                        </p>
+                        <div class="flex gap-4">
+                            <a class="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary hover:bg-primary hover:text-white transition-colors"
+                                href="#">
+                                <span class="material-symbols-outlined text-xl">share</span>
+                            </a>
+                            <a class="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary hover:bg-primary hover:text-white transition-colors"
+                                href="#">
+                                <span class="material-symbols-outlined text-xl">language</span>
+                            </a>
+                            <a class="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary hover:bg-primary hover:text-white transition-colors"
+                                href="#">
+                                <span class="material-symbols-outlined text-xl">mail</span>
+                            </a>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="mb-6 font-bold">Empresa</h3>
+                        <ul class="space-y-4 text-sm text-gray-500">
+                            <li><a class="hover:text-primary" href="#">Sobre nosotros</a></li>
+                            <li><a class="hover:text-primary" href="#">Blog de viajes</a></li>
+                            <li><a class="hover:text-primary" href="#">Nuestros partners</a></li>
+                            <li><a class="hover:text-primary" href="#">Trabaja con nosotros</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3 class="mb-6 font-bold">Soporte</h3>
+                        <ul class="space-y-4 text-sm text-gray-500">
+                            <li><a class="hover:text-primary" href="#">Centro de ayuda</a></li>
+                            <li><a class="hover:text-primary" href="#">Condiciones legales</a></li>
+                            <li><a class="hover:text-primary" href="#">Política de privacidad</a></li>
+                            <li><a class="hover:text-primary" href="#">Cookies</a></li>
+                        </ul>
+                    </div>
+                    <div class="space-y-6">
+                        <h3 class="font-bold">Suscríbete a nuestro boletín</h3>
+                        <p class="text-sm text-gray-500">Recibe las mejores ofertas y noticias directamente en tu email.
+                        </p>
+                        <div class="flex flex-col gap-3">
+                            <input
+                                class="rounded-full border border-gray-200 bg-gray-50 px-6 py-3 text-sm focus:border-primary focus:ring-primary dark:bg-[#2d2417] dark:border-none"
+                                placeholder="Tu email" type="email" />
+                            <button
+                                class="w-full rounded-full bg-primary py-3 font-bold text-white transition-transform hover:scale-105">
+                                Suscribirme
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-16 border-t border-[#eadecd] pt-8 text-center text-sm text-gray-400">
+                    <p>© 2024 Viajes Mundo. Todos los derechos reservados.</p>
+                </div>
+            </div>
+        </footer>
+    </div>
+    {% block script %}{% endblock %}
+</body>
+
+</html>
