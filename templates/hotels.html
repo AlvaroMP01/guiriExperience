@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2 style="margin-bottom: 2rem;">Selected Hotels</h2>
+
+<div class="grid">
+    {% for hotel in hotels %}
+    <div class="card">
+        <img src="{{ url_for('static', filename='uploads/' + hotel.imagen) if hotel.imagen else 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=600' }}"
+            alt="{{ hotel.nombre }}">
+        <div class="card-content">
+            <span class="badge">{{ hotel.ubicacion }}</span>
+            <div style="color: var(--accent); margin-bottom: 0.5rem;">
+                {% for i in range(hotel.estrellas) %}★{% endfor %}
+            </div>
+            <h3>{{ hotel.nombre }}</h3>
+            <p>{{ hotel.descripcion }}</p>
+            <p style="font-weight: bold; font-size: 1.2rem; color: var(--secondary); margin-top: 1rem;">From {{
+                hotel.precio_noche }}€ / night</p>
+            <a href="{{ url_for('hotel_detail', id=hotel.id) }}" class="btn">Check Availability</a>
+        </div>
+    </div>
+    {% else %}
+    <p>No hotels available at the moment.</p>
+    {% endfor %}
+</div>
+{% endblock %}

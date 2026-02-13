@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <a href="javascript:history.back()" class="btn" style="margin-bottom: 2rem; background: #95a5a6;">&larr; Back</a>
+
+    <div class="card"
+        style="display: flex; flex-direction: column; max-width: 900px; margin: 0 auto; box-shadow: 0 15px 40px rgba(0,0,0,0.15);">
+        <img src="{{ url_for('static', filename='uploads/' + service.imagen) if service.imagen else 'https://images.unsplash.com/photo-1559339352-11d035aa65de?auto=format&fit=crop&w=1200' }}"
+            alt="{{ service.titulo if type == 'experience' else service.nombre }}"
+            style="height: 400px; width: 100%; object-fit: cover;">
+
+        <div class="card-content" style="padding: 2.5rem;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
+                <div>
+                    <span class="badge" style="font-size: 1rem; padding: 0.5rem 1rem;">{{ service.ubicacion }}</span>
+                    {% if type == 'hotel' %}
+                    <div style="color: var(--accent); margin-top: 0.5rem; font-size: 1.2rem;">
+                        {% for i in range(service.estrellas) %}★{% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+                <!-- Price Badge -->
+                <div style="text-align: right;">
+                    <span style="display: block; font-size: 2rem; font-weight: bold; color: var(--secondary);">
+                        {{ service.precio if type == 'experience' else (service.precio_noche if type == 'hotel' else
+                        service.precio_dia) }}€
+                    </span>
+                    <span style="color: #7f8c8d; font-size: 0.9rem;">
+                        {% if type == 'experience' %}per person{% elif type == 'hotel' %}per night{% else %}per day{%
+                        endif %}
+                    </span>
+                </div>
+            </div>
+
+            <h1 style="font-size: 2.5rem; margin-bottom: 1.5rem; color: var(--primary);">
+                {{ service.titulo if type == 'experience' else service.nombre }}
+            </h1>
+
+            <p style="font-size: 1.1rem; line-height: 1.8; color: #555; margin-bottom: 2rem;">
+                {{ service.descripcion }}
+            </p>
+
+            {% if type == 'house' %}
+            <p style="margin-bottom: 2rem; font-weight: 600;"><i class="fas fa-bed"></i> Bedrooms: {{
+                service.habitaciones }}</p>
+            {% endif %}
+
+            <hr style="border: 0; border-top: 1px solid #eee; margin-bottom: 2rem;">
+
+            <!-- Booking Section -->
+            <div style="background: #f8f9fa; padding: 2rem; border-radius: 12px;">
+                <h3 style="margin-bottom: 1.5rem;">Plan your visit</h3>
+
+                <form onsubmit="proceedToCheckout(event)"
+                    style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; align-items: end;">
+
+                    <!-- Calendar -->
+                    <div style="display: flex; flex-direction: column;">
+                        <label for="date" style="font-weight: 600; margin-bottom: 0.5rem;">Select Date</label>
+                        <input type="date" id="date" required
+                            style="padding: 0.8rem; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem;">
+                    </div>
+
+                    <!-- Counter -->
+                    <div style="display: flex; flex-direction: column;">
+                        <label style="font-weight: 600; margin-bottom: 0.5rem;">Participants / Guests</label>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <button type="button" onclick="updateCounter(-1)"
+                                style="width: 40px; height: 40px; border: none; background: #ddd; border-radius: 50%; cursor: pointer; font-size: 1.2rem; font-weight: bold;">-</button>
+                            <input type="number" id="counter" value="1" min="1" readonly
+                                style="width: 60px; text-align: center; border: none; font-size: 1.2rem; font-weight: bold; background: transparent;">
+                            <button type="button" onclick="updateCounter(1)"
+                                style="width: 40px; height: 40px; border: none; background: var(--secondary); color: white; border-radius: 50%; cursor: pointer; font-size: 1.2rem; font-weight: bold;">+</button>
+                        </div>
+                    </div>
+
+                    <!-- Submit -->
+                    <div>
+                        <button type="submit" class="btn" style="width: 100%; margin-top: 0; font-size: 1.1rem;">
+                            Confirm Booking
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function proceedToCheckout(event) {
+        event.preventDefault();
+        const date = document.getElementById('date').value;
+        const quantity = document.getElementById('counter').value;
+        const serviceId = "{{ service.id }}";
+        const serviceType = "{{ type }}";
+
+        if (!date) {
+            alert("Please select a date.");
+            return;
+        }
+
+        window.location.href = `/checkout/${serviceType}/${serviceId}?date=${date}&quantity=${quantity}`;
+    }
+
+    function updateCounter(change) {
+        const counter = document.getElementById('counter');
+        let val = parseInt(counter.value);
+        val += change;
+        if (val < 1) val = 1;
+        counter.value = val;
+    }
+
+    // Set min date to today
+    document.getElementById('date').min = new Date().toISOString().split("T")[0];
+</script>
+{% endblock %}

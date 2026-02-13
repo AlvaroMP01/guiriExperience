@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="hero">
+    <h1>Discover Unforgettable Experiences</h1>
+    <p>From gourmet dinners to nature retreats. All in one place.</p>
+</div>
+
+<h2 style="margin-bottom: 2rem; text-align: center;">Our Services</h2>
+
+<div class="grid">
+    <div class="card" onclick="location.href='{{ url_for('list_experiences') }}'">
+        <img src="https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?auto=format&fit=crop&w=600"
+            alt="Experiences">
+        <div class="card-content">
+            <span class="badge">Gastronomy</span>
+            <h3>Culinary Experiences</h3>
+            <p>Wine tastings, local cooking classes, and exclusive dinners with top chefs.</p>
+        </div>
+    </div>
+
+    <div class="card" onclick="location.href='{{ url_for('list_hotels') }}'">
+        <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=600" alt="Hotels">
+        <div class="card-content">
+            <span class="badge">Comfort</span>
+            <h3>Luxury Hotels</h3>
+            <p>Premium selection of hotels with the best views and exclusive services.</p>
+        </div>
+    </div>
+
+    <div class="card" onclick="location.href='{{ url_for('list_houses') }}'">
+        <img src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=600"
+            alt="Rental Houses">
+        <div class="card-content">
+            <span class="badge">Nature</span>
+            <h3>Rural Houses</h3>
+            <p>Escape to the tranquility of nature in our selected rental homes.</p>
+        </div>
+    </div>
+</div>
+{% endblock %}
