@@ -9,6 +9,11 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <!-- CSS from Group 1 (assuming it exists or was inline, we'll try to link it if present) -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <!-- Tailwind CSS (Group 3) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Material Symbols (Group 3) -->
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     {% block head %}{% endblock %}
@@ -31,7 +36,7 @@
         <a href="{{ url_for('list_experiences') }}">Experiences</a>
         <a href="{{ url_for('list_hotels') }}">Hotels</a>
         <a href="{{ url_for('list_houses') }}">Rental Houses</a>
-        
+
         <div class="nav-right" style="float: right;">
             <a href="{{ url_for('reservations') }}">My Bookings</a>
             <a href="{{ url_for('admin') }}">Admin</a>
@@ -40,15 +45,15 @@
 
     <div class="container">
         {% with messages = get_flashed_messages(with_categories=true) %}
-          {% if messages %}
-            <div class="flashes">
+        {% if messages %}
+        <div class="flashes">
             {% for category, message in messages %}
-              <div class="alert alert-{{ category }}">{{ message }}</div>
+            <div class="alert alert-{{ category }}">{{ message }}</div>
             {% endfor %}
-            </div>
-          {% endif %}
+        </div>
+        {% endif %}
         {% endwith %}
-        
+
         {% block content %}{% endblock %}
     </div>
 

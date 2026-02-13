@@ -14,7 +14,7 @@ def crear_usuarios():
     with app.app_context():
         # Primero crear las tablas si no existen
         db.create_all()
-        print("✓ Tablas verificadas/creadas\n")
+        print("Tablas verificadas/creadas\n")
         
         # Definir los usuarios a crear
         usuarios = [
@@ -33,26 +33,28 @@ def crear_usuarios():
             usuario_existente = User.query.filter_by(username=username).first()
             
             if usuario_existente:
-                print(f"⚠️  Usuario '{username}' ya existe - OMITIDO")
+                print(f"Usuario '{username}' ya existe - OMITIDO")
             else:
                 # Crear nuevo usuario
+                email = f"{username}@example.com"
                 nuevo_usuario = User(
                     username=username,
+                    email=email,
                     password=generate_password_hash(password),
                     role=role
                 )
                 db.session.add(nuevo_usuario)
                 usuarios_creados += 1
-                print(f"✓ Usuario '{username}' creado exitosamente ({descripcion})")
+                print(f"Usuario '{username}' creado exitosamente ({descripcion})")
         
         # Guardar cambios en la base de datos
         if usuarios_creados > 0:
             db.session.commit()
             print("\n" + "="*70)
-            print(f"✅ {usuarios_creados} usuario(s) creado(s) y guardado(s) en la base de datos")
+            print(f"{usuarios_creados} usuario(s) creado(s) y guardado(s) en la base de datos")
         else:
             print("\n" + "="*70)
-            print("ℹ️  Todos los usuarios ya existían en la base de datos")
+            print("Todos los usuarios ya existían en la base de datos")
         
         # Mostrar credenciales
         print("\n" + "="*70)
@@ -77,5 +79,5 @@ if __name__ == '__main__':
     print("SCRIPT DE CREACIÓN DE USUARIOS")
     print("="*70 + "\n")
     crear_usuarios()
-    print("\n✅ Proceso completado. Puedes iniciar la aplicación con: python app.py")
+    print("\nProceso completado. Puedes iniciar la aplicación con: python app.py")
     print()
