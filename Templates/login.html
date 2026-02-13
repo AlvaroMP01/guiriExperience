@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="flex min-h-[calc(100vh-200px)] items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div class="w-full max-w-md space-y-8 bg-white dark:bg-[#2d2417] p-8 rounded-2xl shadow-xl border border-[#eadecd]">
+        <div>
+            <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-primary">
+                <span class="material-symbols-outlined text-2xl">lock</span>
+            </div>
+            <h2 class="mt-6 text-center text-3xl font-bold tracking-tight text-gray-900 dark:text-white">
+                Iniciar Sesión
+            </h2>
+            <p class="mt-2 text-center text-sm text-gray-600 dark:text-gray-400">
+                Accede a tu cuenta de Viajes Mundo
+            </p>
+        </div>
+        <form class="mt-8 space-y-6" method="POST">
+            <div class="-space-y-px rounded-md shadow-sm">
+                <div class="mb-4">
+                    <label for="username" class="sr-only">Usuario</label>
+                    <div class="relative">
+                        <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                            <span class="material-symbols-outlined text-gray-400">person</span>
+                        </div>
+                        <input id="username" name="username" type="text" required
+                            class="relative block w-full rounded-xl border-0 py-3 pl-10 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:z-10 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 dark:bg-[#1a140b] dark:ring-gray-700 dark:text-white"
+                            placeholder="Nombre de usuario">
+                    </div>
+                </div>
+                <div>
+                    <label for="password" class="sr-only">Contraseña</label>
+                    <div class="relative">
+                        <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                            <span class="material-symbols-outlined text-gray-400">key</span>
+                        </div>
+                        <input id="password" name="password" type="password" required
+                            class="relative block w-full rounded-xl border-0 py-3 pl-10 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:z-10 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 dark:bg-[#1a140b] dark:ring-gray-700 dark:text-white"
+                            placeholder="Contraseña">
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <button type="submit"
+                    class="group relative flex w-full justify-center rounded-full bg-primary px-3 py-3 text-sm font-semibold text-white hover:bg-primary/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary transition-all hover:scale-[1.02]">
+                    <span class="absolute inset-y-0 left-0 flex items-center pl-3">
+                        <span
+                            class="material-symbols-outlined h-5 w-5 text-white/50 group-hover:text-white">login</span>
+                    </span>
+                    Entrar
+                </button>
+            </div>
+
+            <div class="text-center text-sm">
+                <a href="{{ url_for('register') }}" class="font-medium text-primary hover:text-primary/80">
+                    ¿No tienes cuenta? Regístrate aquí
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
