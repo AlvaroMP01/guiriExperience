@@ -16,6 +16,12 @@ This repository also integrates:
 - **Hotels** 🏨
 - **Rental Houses** 🏡
 
+## 📋 Group 3 Responsibilities
+This repository includes:
+- **User Authentication** (Login/Register) 🔒
+- **Profile Management** 👤
+- **Role Management** 🛡️
+
 ## 🎯 Features Implemented
 
 ### 1. User-Facing Pages
@@ -60,19 +66,25 @@ Each service includes a booking form with necessary details.
 ## 🔧 Technical Requirements
 - Python Flask Backend
 - SQLAlchemy ORM (Unified Database)
-- SQLite Database (`guiriexperience.db`)
+- **SQLite Database** (`guiriexperience.db`) - Replaces Group 3's MySQL requirement for ease of testing.
+- Flask-Login for Authentication
 - Jinja2 Templating
 
 ## 🚀 Installation & Run
 1. Install dependencies:
    ```bash
-   pip install flask flask-sqlalchemy
+   pip install flask flask-sqlalchemy flask-loginwerkzeug
    ```
 2. Run the application:
    ```bash
    python app.py
    ```
    The database tables will be created automatically.
+   
+3. (Optional) Create initial users:
+   ```bash
+   python crear_usuarios.py
+   ```
 
 ---
 

@@ -5,7 +5,8 @@ Script para crear 3 usuarios en la base de datos:
 3. Usuario (rol: usuario)
 """
 
-from models import app, db, User
+from app import app, db
+from models import User
 from werkzeug.security import generate_password_hash
 
 def crear_usuarios():

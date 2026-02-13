@@ -1,5 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
+from flask_login import UserMixin
 
 # Initialize SQLAlchemy
 db = SQLAlchemy()
@@ -73,14 +74,14 @@ class Reservation(db.Model):
     status = db.Column(db.String(20), default='CONFIRMED')
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
-# ==================== GROUP 2 MODELS ====================
+# ==================== GROUP 2 & 3 MODELS ====================
 
-class Usuario(db.Model):
-    __tablename__ = 'usuarios'
+class User(db.Model, UserMixin):
+    __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
-    email = db.Column(db.String(120), unique=True, nullable=False)
-    password = db.Column(db.String(120), nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=False) # Copied email field, though creating script doesn't use it, better to have.
+    password = db.Column(db.String(200), nullable=False) # increased length for hash
     role = db.Column(db.String(20), default='USER')
 
 class ExperienciaCulinaria(db.Model):
@@ -91,7 +92,7 @@ class ExperienciaCulinaria(db.Model):
     precio = db.Column(db.Float, nullable=False)
     ubicacion = db.Column(db.String(100), nullable=False)
     imagen = db.Column(db.String(200), nullable=True)
-    proveedor_id = db.Column(db.Integer, db.ForeignKey('usuarios.id'), nullable=True)
+    proveedor_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=True)
 
 class Hotel(db.Model):
     __tablename__ = 'hoteles'
@@ -102,7 +103,7 @@ class Hotel(db.Model):
     precio_noche = db.Column(db.Float, nullable=False)
     ubicacion = db.Column(db.String(100), nullable=False)
     imagen = db.Column(db.String(200), nullable=True)
-    proveedor_id = db.Column(db.Integer, db.ForeignKey('usuarios.id'), nullable=True)
+    proveedor_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=True)
 
 class CasaAlquiler(db.Model):
     __tablename__ = 'casas'
@@ -113,15 +114,16 @@ class CasaAlquiler(db.Model):
     precio_dia = db.Column(db.Float, nullable=False)
     ubicacion = db.Column(db.String(100), nullable=False)
     imagen = db.Column(db.String(200), nullable=True)
-    proveedor_id = db.Column(db.Integer, db.ForeignKey('usuarios.id'), nullable=True)
+    proveedor_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=True)
 
 class Reserva(db.Model):
     __tablename__ = 'reservas'
     id = db.Column(db.Integer, primary_key=True)
-    usuario_id = db.Column(db.Integer, db.ForeignKey('usuarios.id'), nullable=False)
+    usuario_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     tipo_servicio = db.Column(db.String(50), nullable=False)
     servicio_id = db.Column(db.Integer, nullable=False)
     fecha_inicio = db.Column(db.Date, nullable=False)
     total = db.Column(db.Float, nullable=False)
     estado = db.Column(db.String(20), default='PENDING')
+
 
