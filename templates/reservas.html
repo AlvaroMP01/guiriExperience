@@ -5,246 +5,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mis Reservas - GuiriExperience</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-        }
-
-        header {
-            background: rgba(255, 255, 255, 0.95);
-            padding: 20px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .header-content {
-            max-width: 1400px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        h1 {
-            color: #667eea;
-            font-size: 2em;
-        }
-
-        nav a {
-            margin-left: 20px;
-            text-decoration: none;
-            color: #333;
-            font-weight: 500;
-            transition: color 0.3s;
-        }
-
-        nav a:hover {
-            color: #667eea;
-        }
-
-        main {
-            max-width: 1400px;
-            margin: 30px auto;
-            padding: 20px;
-        }
-
-        .section {
-            background: white;
-            border-radius: 15px;
-            padding: 30px;
-            margin-bottom: 30px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-        }
-
-        h2 {
-            color: #667eea;
-            margin-bottom: 20px;
-            font-size: 1.8em;
-            border-bottom: 3px solid #667eea;
-            padding-bottom: 10px;
-        }
-
-        .filter-bar {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 25px;
-            flex-wrap: wrap;
-        }
-
-        .filter-bar select,
-        .filter-bar input {
-            padding: 10px;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            font-size: 1em;
-        }
-
-        .filter-bar select {
-            min-width: 150px;
-        }
-
-        .reservations-grid {
-            display: grid;
-            gap: 20px;
-        }
-
-        .reservation-card {
-            border: 2px solid #e0e0e0;
-            border-radius: 10px;
-            padding: 20px;
-            transition: all 0.3s;
-            display: grid;
-            grid-template-columns: auto 1fr auto;
-            gap: 20px;
-            align-items: center;
-        }
-
-        .reservation-card:hover {
-            border-color: #667eea;
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
-        }
-
-        .reservation-icon {
-            font-size: 3em;
-        }
-
-        .reservation-details h3 {
-            color: #333;
-            margin-bottom: 10px;
-            font-size: 1.3em;
-        }
-
-        .reservation-details p {
-            color: #666;
-            margin: 5px 0;
-        }
-
-        .reservation-details .detail-row {
-            display: flex;
-            gap: 20px;
-            flex-wrap: wrap;
-        }
-
-        .reservation-details .detail-item {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .reservation-actions {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: all 0.3s;
-            text-align: center;
-            text-decoration: none;
-            display: inline-block;
-        }
-
-        .btn-view {
-            background: #2196F3;
-            color: white;
-        }
-
-        .btn-view:hover {
-            background: #1976D2;
-        }
-
-        .btn-cancel {
-            background: #f44336;
-            color: white;
-        }
-
-        .btn-cancel:hover {
-            background: #d32f2f;
-        }
-
-        .btn-download {
-            background: #4CAF50;
-            color: white;
-        }
-
-        .btn-download:hover {
-            background: #388E3C;
-        }
-
-        .status-badge {
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 0.9em;
-            font-weight: bold;
-            display: inline-block;
-        }
-
-        .status-confirmed {
-            background: #d4edda;
-            color: #155724;
-        }
-
-        .status-pending {
-            background: #fff3cd;
-            color: #856404;
-        }
-
-        .status-cancelled {
-            background: #f8d7da;
-            color: #721c24;
-        }
-
-        .status-completed {
-            background: #d1ecf1;
-            color: #0c5460;
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 60px 20px;
-            color: #666;
-        }
-
-        .empty-state-icon {
-            font-size: 5em;
-            margin-bottom: 20px;
-        }
-
-        .empty-state h3 {
-            font-size: 1.5em;
-            margin-bottom: 10px;
-            color: #333;
-        }
-
-        .empty-state p {
-            margin-bottom: 20px;
-        }
-
-        .empty-state .btn {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 15px 30px;
-            font-size: 1.1em;
-        }
-
-        .price-tag {
-            font-size: 1.3em;
-            font-weight: bold;
-            color: #667eea;
-        }
-    </style>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
 
 <body>
@@ -294,41 +59,42 @@
                 {% for reservation in reservations %}
                 <div class="reservation-card" data-type="{{ reservation.service_type }}"
                     data-status="{{ reservation.status }}">
-                    <div class="reservation-icon">
-                        {% if reservation.service_type == 'tour' %}🎫
-                        {% elif reservation.service_type == 'cruise' %}🚢
-                        {% elif reservation.service_type == 'bus' %}🚌
-                        {% elif reservation.service_type == 'train' %}🚆
-                        {% endif %}
+                    <div class="reservation-header">
+                        <div class="reservation-icon">
+                            {% if reservation.service_type == 'tour' %}🎫
+                            {% elif reservation.service_type == 'cruise' %}🚢
+                            {% elif reservation.service_type == 'bus' %}🚌
+                            {% elif reservation.service_type == 'train' %}🚆
+                            {% endif %}
+                        </div>
+                        <span class="status-badge status-{{ reservation.status|lower }}">{{ reservation.status }}</span>
                     </div>
 
-                    <div class="reservation-details">
+                    <div class="reservation-body">
                         <h3>{{ reservation.detail }}</h3>
-                        <span class="status-badge status-{{ reservation.status|lower }}">{{ reservation.status }}</span>
 
                         <div class="detail-row">
-                            <div class="detail-item">
-                                <strong>📅 Fecha Reserva:</strong> {{ reservation.created_at }}
-                            </div>
-                            <div class="detail-item">
-                                <strong>👥 Cantidad:</strong> {{ reservation.quantity }}
-                            </div>
+                            <span>📅 Fecha:</span>
+                            <strong>{{ reservation.created_at }}</strong>
+                        </div>
+                        <div class="detail-row">
+                            <span>👥 Pasajeros:</span>
+                            <strong>{{ reservation.quantity }}</strong>
+                        </div>
+                        <div class="detail-row">
+                            <span>🆔 ID:</span>
+                            <strong>#{{ reservation.id }}</strong>
                         </div>
 
-                        <div class="detail-row">
-                            <div class="detail-item">
-                                <strong>🆔 ID Reserva:</strong> {{ reservation.id }}
-                            </div>
-                            <div class="detail-item">
-                                <span class="price-tag">{{ reservation.total_price }} €</span>
-                            </div>
-                        </div>
+                        <div class="price-big">{{ reservation.total_price }} €</div>
                     </div>
 
                     <div class="reservation-actions">
                         {% if reservation.status in ['CONFIRMED', 'PENDING'] %}
                         <button class="btn btn-cancel"
-                            onclick="alert('Funcionalidad de cancelar no implementada aún en la demo.')">Cancelar</button>
+                            onclick="alert('Funcionalidad de cancelar no implementada aún en la demo.')"
+                            style="background-color: #ff6b6b; color: white; width: 100%; padding: 10px; border: none; border-radius: 8px; cursor: pointer;">Cancelar
+                            Reserva</button>
                         {% endif %}
                     </div>
                 </div>
