@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2 style="margin-bottom: 2rem;">Rural Houses and Rentals</h2>
+
+<div class="grid">
+    {% for house in houses %}
+    <div class="card">
+        <img src="{{ url_for('static', filename='uploads/' + house.imagen) if house.imagen else 'https://images.unsplash.com/photo-1518780664697-55e3ad937233?auto=format&fit=crop&w=600' }}"
+            alt="{{ house.nombre }}">
+        <div class="card-content">
+            <span class="badge">{{ house.ubicacion }}</span>
+            <h3>{{ house.nombre }}</h3>
+            <p>{{ house.descripcion }}</p>
+            <p style="font-size: 0.9rem; margin-top: 0.5rem;">Rooms: {{ house.habitaciones }}</p>
+            <p style="font-weight: bold; font-size: 1.2rem; color: var(--secondary); margin-top: 1rem;">{{
+                house.precio_dia }}€ / day</p>
+            <a href="{{ url_for('house_detail', id=house.id) }}" class="btn">Learn More</a>
+        </div>
+    </div>
+    {% else %}
+    <p>No houses available at the moment.</p>
+    {% endfor %}
+</div>
+{% endblock %}

@@ -1,257 +1,191 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
+from models import db, Tour, Cruise, Bus, Train, Reservation, Usuario, ExperienciaCulinaria, Hotel, CasaAlquiler, Reserva
 from datetime import datetime
-import sqlite3
 import os
 
 app = Flask(__name__)
-app.secret_key = 'your-secret-key-change-this-in-production'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///guiriexperience.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SECRET_KEY'] = 'your-secret-key-change-this-in-production'
+app.config['UPLOAD_FOLDER'] = 'static/uploads'
 
-# Database configuration
-DATABASE = 'guiriexperience.db'
+db.init_app(app)
 
-# ==================== DATABASE FUNCTIONS ====================
-
-def get_db():
-    """Get database connection"""
-    conn = sqlite3.connect(DATABASE)
-    conn.row_factory = sqlite3.Row  # Return rows as dictionaries
-    return conn
-
-def init_db():
-    """Initialize database with tables"""
-    conn = get_db()
-    cursor = conn.cursor()
+# Create database and tables
+with app.app_context():
+    db.create_all()
     
-    # Tours table
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS tours (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT NOT NULL,
-            category TEXT NOT NULL,
-            guide TEXT NOT NULL,
-            date DATE NOT NULL,
-            time TIME NOT NULL,
-            price REAL NOT NULL,
-            description TEXT,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        )
-    ''')
-    
-    # Cruises table
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS cruises (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            destination TEXT NOT NULL,
-            ship TEXT NOT NULL,
-            departure_date DATE NOT NULL,
-            duration INTEGER NOT NULL,
-            price REAL NOT NULL,
-            description TEXT,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        )
-    ''')
-    
-    # Buses table
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS buses (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            origin TEXT NOT NULL,
-            destination TEXT NOT NULL,
-            departure_time TIME NOT NULL,
-            arrival_time TIME NOT NULL,
-            price REAL NOT NULL,
-            seats_available INTEGER DEFAULT 50,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        )
-    ''')
-    
-    # Trains table
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS trains (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            origin TEXT NOT NULL,
-            destination TEXT NOT NULL,
-            departure_time TIME NOT NULL,
-            arrival_time TIME NOT NULL,
-            price REAL NOT NULL,
-            seats_available INTEGER DEFAULT 100,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        )
-    ''')
-    
-    # Reservations table (for statistics)
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS reservations (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            service_type TEXT NOT NULL,
-            service_id INTEGER NOT NULL,
-            quantity INTEGER DEFAULT 1,
-            total_price REAL NOT NULL,
-            status TEXT DEFAULT 'PENDING',
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        )
-    ''')
-    
-    # Insert sample data if tables are empty
-    cursor.execute("SELECT COUNT(*) FROM tours")
-    if cursor.fetchone()[0] == 0:
+    # Insert sample data if tables are empty (Grupo1 data)
+    if Tour.query.count() == 0:
         sample_tours = [
-            ('Madrid City Tour', 'Cultural', 'Carlos García', '2024-03-15', '10:00', 45.00, 'Explore the historic center of Madrid'),
-            ('Flamenco Experience', 'Cultural', 'María López', '2024-03-16', '20:00', 65.00, 'Authentic flamenco show with dinner'),
-            ('Tapas & Wine Tour', 'Gastronomic', 'Juan Martínez', '2024-03-17', '19:00', 55.00, 'Taste the best tapas in town'),
+            Tour(name='Madrid City Tour', category='Cultural', guide='Carlos García', date='2024-03-15', time='10:00', price=45.00, description='Explore the historic center of Madrid'),
+            Tour(name='Flamenco Experience', category='Cultural', guide='María López', date='2024-03-16', time='20:00', price=65.00, description='Authentic flamenco show with dinner'),
+            Tour(name='Tapas & Wine Tour', category='Gastronomic', guide='Juan Martínez', date='2024-03-17', time='19:00', price=55.00, description='Taste the best tapas in town'),
         ]
-        cursor.executemany(
-            "INSERT INTO tours (name, category, guide, date, time, price, description) VALUES (?, ?, ?, ?, ?, ?, ?)",
-            sample_tours
-        )
+        db.session.add_all(sample_tours)
+        db.session.commit()
     
-    cursor.execute("SELECT COUNT(*) FROM cruises")
-    if cursor.fetchone()[0] == 0:
+    if Cruise.query.count() == 0:
         sample_cruises = [
-            ('Mediterranean Paradise', 'Ocean Dream', '2024-04-10', 7, 899.00, 'Visit Greece, Italy, and Spain'),
-            ('Caribbean Adventure', 'Sea Explorer', '2024-05-15', 10, 1299.00, 'Explore the Caribbean islands'),
+            Cruise(destination='Mediterranean Paradise', ship='Ocean Dream', departure_date='2024-04-10', duration=7, price=899.00, description='Visit Greece, Italy, and Spain'),
+            Cruise(destination='Caribbean Adventure', ship='Sea Explorer', departure_date='2024-05-15', duration=10, price=1299.00, description='Explore the Caribbean islands'),
         ]
-        cursor.executemany(
-            "INSERT INTO cruises (destination, ship, departure_date, duration, price, description) VALUES (?, ?, ?, ?, ?, ?)",
-            sample_cruises
-        )
+        db.session.add_all(sample_cruises)
+        db.session.commit()
     
-    cursor.execute("SELECT COUNT(*) FROM buses")
-    if cursor.fetchone()[0] == 0:
+    if Bus.query.count() == 0:
         sample_buses = [
-            ('Madrid', 'Barcelona', '08:00', '14:30', 35.00, 50),
-            ('Seville', 'Granada', '10:30', '13:45', 22.00, 50),
+            Bus(origin='Madrid', destination='Barcelona', departure_time='08:00', arrival_time='14:30', price=35.00),
+            Bus(origin='Seville', destination='Granada', departure_time='10:30', arrival_time='13:45', price=22.00),
         ]
-        cursor.executemany(
-            "INSERT INTO buses (origin, destination, departure_time, arrival_time, price, seats_available) VALUES (?, ?, ?, ?, ?, ?)",
-            sample_buses
-        )
+        db.session.add_all(sample_buses)
+        db.session.commit()
     
-    cursor.execute("SELECT COUNT(*) FROM trains")
-    if cursor.fetchone()[0] == 0:
+    if Train.query.count() == 0:
         sample_trains = [
-            ('Madrid', 'Valencia', '07:30', '09:25', 42.00, 100),
-            ('Barcelona', 'Zaragoza', '15:00', '16:30', 28.00, 100),
+            Train(origin='Madrid', destination='Valencia', departure_time='07:30', arrival_time='09:25', price=42.00),
+            Train(origin='Barcelona', destination='Zaragoza', departure_time='15:00', arrival_time='16:30', price=28.00),
         ]
-        cursor.executemany(
-            "INSERT INTO trains (origin, destination, departure_time, arrival_time, price, seats_available) VALUES (?, ?, ?, ?, ?, ?)",
-            sample_trains
-        )
-    
-    # Add some sample reservations for statistics
-    cursor.execute("SELECT COUNT(*) FROM reservations")
-    if cursor.fetchone()[0] == 0:
-        sample_reservations = [
-            ('tour', 1, 2, 90.00, 'CONFIRMED'),
-            ('cruise', 1, 1, 899.00, 'CONFIRMED'),
-            ('bus', 1, 3, 105.00, 'CONFIRMED'),
-            ('train', 1, 2, 84.00, 'PENDING'),
-        ]
-        cursor.executemany(
-            "INSERT INTO reservations (service_type, service_id, quantity, total_price, status) VALUES (?, ?, ?, ?, ?)",
-            sample_reservations
-        )
-    
-    conn.commit()
-    conn.close()
-
-# Initialize database on startup
-if not os.path.exists(DATABASE):
-    init_db()
+        db.session.add_all(sample_trains)
+        db.session.commit()
 
 # ==================== MAIN ROUTES ====================
 
 @app.route('/')
 def index():
-    """Home page"""
+    """Home page - unified view"""
     return render_template('index.html')
+
+# ==================== GRUPO1 ROUTES (Tours, Cruises, Buses, Trains) ====================
 
 @app.route('/tours')
 def tours():
     """Tours page"""
-    conn = get_db()
-    tours = conn.execute('SELECT * FROM tours ORDER BY date').fetchall()
-    conn.close()
+    tours = Tour.query.order_by(Tour.date).all()
     return render_template('tours.html', tours=tours)
 
 @app.route('/cruises')
 def cruises():
     """Cruises page"""
-    conn = get_db()
-    cruises = conn.execute('SELECT * FROM cruises ORDER BY departure_date').fetchall()
-    conn.close()
+    cruises = Cruise.query.order_by(Cruise.departure_date).all()
     return render_template('cruceros.html', cruises=cruises)
 
 @app.route('/buses')
 def buses():
     """Buses page"""
-    conn = get_db()
-    buses = conn.execute('SELECT * FROM buses ORDER BY departure_time').fetchall()
-    conn.close()
+    buses = Bus.query.order_by(Bus.departure_time).all()
     return render_template('bus.html', buses=buses)
 
 @app.route('/trains')
 def trains():
     """Trains page"""
-    conn = get_db()
-    trains = conn.execute('SELECT * FROM trains ORDER BY departure_time').fetchall()
-    conn.close()
+    trains = Train.query.order_by(Train.departure_time).all()
     return render_template('trenes.html', trains=trains)
 
 @app.route('/reservations')
 def reservations():
-    """Reservations page"""
-    conn = get_db()
-    # Fetch reservations with some details (simplified for now)
-    reservations_data = conn.execute('SELECT * FROM reservations ORDER BY created_at DESC').fetchall()
+    """Reservations page (Grupo1 style)"""
+    reservations_data = Reservation.query.order_by(Reservation.created_at.desc()).all()
+    return render_template('reservas.html', reservations=reservations_data)
+
+# ==================== GRUPO2 ROUTES (Experiences, Hotels, Houses) ====================
+
+@app.route('/experiences')
+def list_experiences():
+    """Culinary experiences page"""
+    experiences = ExperienciaCulinaria.query.all()
+    return render_template('experiences.html', experiences=experiences)
+
+@app.route('/hotels')
+def list_hotels():
+    """Hotels page"""
+    hotels = Hotel.query.all()
+    return render_template('hotels.html', hotels=hotels)
+
+@app.route('/houses')
+def list_houses():
+    """Rental houses page"""
+    houses = CasaAlquiler.query.all()
+    return render_template('houses.html', houses=houses)
+
+@app.route('/experience/<int:id>')
+def experience_detail(id):
+    """Experience detail page"""
+    service = ExperienciaCulinaria.query.get_or_404(id)
+    return render_template('service_detail.html', service=service, type='experience')
+
+@app.route('/hotel/<int:id>')
+def hotel_detail(id):
+    """Hotel detail page"""
+    service = Hotel.query.get_or_404(id)
+    return render_template('service_detail.html', service=service, type='hotel')
+
+@app.route('/house/<int:id>')
+def house_detail(id):
+    """House detail page"""
+    service = CasaAlquiler.query.get_or_404(id)
+    return render_template('service_detail.html', service=service, type='house')
+
+@app.route('/checkout/<string:type>/<int:id>')
+def checkout(type, id):
+    """Checkout page (Grupo2 style)"""
+    if type == 'experience':
+        service = ExperienciaCulinaria.query.get_or_404(id)
+        price = service.precio
+    elif type == 'hotel':
+        service = Hotel.query.get_or_404(id)
+        price = service.precio_noche
+    elif type == 'house':
+        service = CasaAlquiler.query.get_or_404(id)
+        price = service.precio_dia
+    else:
+        return redirect(url_for('index'))
     
-    # Enrich data with service details manually since we have separate tables
-    reservations = []
-    for res in reservations_data:
-        res_dict = dict(res)
-        service_id = res['service_id']
-        service_type = res['service_type']
-        
-        detail = "Servicio desconocido"
-        if service_type == 'tour':
-            item = conn.execute('SELECT name FROM tours WHERE id = ?', (service_id,)).fetchone()
-            if item: detail = f"Tour: {item['name']}"
-        elif service_type == 'cruise':
-            item = conn.execute('SELECT destination, ship FROM cruises WHERE id = ?', (service_id,)).fetchone()
-            if item: detail = f"Crucero: {item['destination']} ({item['ship']})"
-        elif service_type == 'bus':
-            item = conn.execute('SELECT origin, destination FROM buses WHERE id = ?', (service_id,)).fetchone()
-            if item: detail = f"Bus: {item['origin']} -> {item['destination']}"
-        elif service_type == 'train':
-            item = conn.execute('SELECT origin, destination FROM trains WHERE id = ?', (service_id,)).fetchone()
-            if item: detail = f"Tren: {item['origin']} -> {item['destination']}"
-            
-        res_dict['detail'] = detail
-        reservations.append(res_dict)
-        
-    conn.close()
-    return render_template('reservas.html', reservations=reservations)
+    date = request.args.get('date')
+    quantity = int(request.args.get('quantity', 1))
+    total = price * quantity
+    
+    return render_template('checkout.html', service=service, type=type, date=date, quantity=quantity, price=price, total=total)
+
+@app.route('/process_payment', methods=['POST'])
+def process_payment():
+    """Process payment (Grupo2 style)"""
+    service_id = request.form['service_id']
+    service_type = request.form['type']
+    date = request.form['date']
+    quantity = request.form['quantity']
+    total = request.form['total']
+    
+    date_obj = datetime.strptime(date, '%Y-%m-%d').date()
+    
+    new_reservation = Reserva(
+        usuario_id=1, 
+        tipo_servicio=service_type, 
+        servicio_id=int(service_id), 
+        fecha_inicio=date_obj, 
+        total=float(total), 
+        estado='CONFIRMED'
+    )
+    db.session.add(new_reservation)
+    db.session.commit()
+    
+    flash('Payment successful! Your booking is confirmed.', 'success')
+    return redirect(url_for('index'))
 
 # ==================== ADMIN ROUTES ====================
 
 @app.route('/admin')
 def admin():
-    """Admin panel - unified view"""
-    conn = get_db()
+    """Admin panel - unified view (Grupo1 style)"""
+    tours = Tour.query.order_by(Tour.date).all()
+    cruises = Cruise.query.order_by(Cruise.departure_date).all()
+    buses = Bus.query.order_by(Bus.departure_time).all()
+    trains = Train.query.order_by(Train.departure_time).all()
     
-    # Get all data
-    tours = conn.execute('SELECT * FROM tours ORDER BY date').fetchall()
-    cruises = conn.execute('SELECT * FROM cruises ORDER BY departure_date').fetchall()
-    buses = conn.execute('SELECT * FROM buses ORDER BY departure_time').fetchall()
-    trains = conn.execute('SELECT * FROM trains ORDER BY departure_time').fetchall()
-    
-    # Calculate statistics
     total_services = len(tours) + len(cruises) + len(buses) + len(trains)
-    total_bookings = conn.execute('SELECT COUNT(*) FROM reservations').fetchone()[0]
-    active_services = total_services  # For now, all are active
-    total_revenue = conn.execute('SELECT SUM(total_price) FROM reservations').fetchone()[0] or 0
-    
-    conn.close()
+    total_bookings = Reservation.query.count()
+    active_services = total_services
+    total_revenue = db.session.query(db.func.sum(Reservation.total_price)).scalar() or 0
     
     return render_template('admin.html',
                          tours=tours,
@@ -262,6 +196,19 @@ def admin():
                          total_bookings=total_bookings,
                          active_services=active_services,
                          total_revenue=total_revenue)
+
+@app.route('/admin/dashboard')
+def admin_dashboard():
+    """Admin dashboard (Grupo2 style)"""
+    experiences = ExperienciaCulinaria.query.all()
+    hotels = Hotel.query.all()
+    houses = CasaAlquiler.query.all()
+    reservations = Reserva.query.all()
+    return render_template('admin/dashboard.html', 
+                           experiences=experiences, 
+                           hotels=hotels, 
+                           houses=houses,
+                           reservations=reservations)
 
 # ==================== TOURS ADMIN ROUTES ====================
 
@@ -275,13 +222,9 @@ def add_tour():
     time = request.form.get('time')
     price = request.form.get('price')
     
-    conn = get_db()
-    conn.execute(
-        'INSERT INTO tours (name, category, guide, date, time, price) VALUES (?, ?, ?, ?, ?, ?)',
-        (name, category, guide, date, time, price)
-    )
-    conn.commit()
-    conn.close()
+    new_tour = Tour(name=name, category=category, guide=guide, date=date, time=time, price=price)
+    db.session.add(new_tour)
+    db.session.commit()
     
     flash('Tour added successfully!', 'success')
     return redirect(url_for('admin'))
@@ -289,11 +232,9 @@ def add_tour():
 @app.route('/admin/tour/<int:id>/delete', methods=['POST'])
 def delete_tour(id):
     """Delete tour"""
-    conn = get_db()
-    conn.execute('DELETE FROM tours WHERE id = ?', (id,))
-    conn.commit()
-    conn.close()
-    
+    tour = Tour.query.get_or_404(id)
+    db.session.delete(tour)
+    db.session.commit()
     return jsonify({'success': True})
 
 # ==================== CRUISES ADMIN ROUTES ====================
@@ -307,13 +248,9 @@ def add_cruise():
     duration = request.form.get('duration')
     price = request.form.get('price')
     
-    conn = get_db()
-    conn.execute(
-        'INSERT INTO cruises (destination, ship, departure_date, duration, price) VALUES (?, ?, ?, ?, ?)',
-        (destination, ship, departure_date, duration, price)
-    )
-    conn.commit()
-    conn.close()
+    new_cruise = Cruise(destination=destination, ship=ship, departure_date=departure_date, duration=duration, price=price)
+    db.session.add(new_cruise)
+    db.session.commit()
     
     flash('Cruise added successfully!', 'success')
     return redirect(url_for('admin'))
@@ -321,11 +258,9 @@ def add_cruise():
 @app.route('/admin/cruise/<int:id>/delete', methods=['POST'])
 def delete_cruise(id):
     """Delete cruise"""
-    conn = get_db()
-    conn.execute('DELETE FROM cruises WHERE id = ?', (id,))
-    conn.commit()
-    conn.close()
-    
+    cruise = Cruise.query.get_or_404(id)
+    db.session.delete(cruise)
+    db.session.commit()
     return jsonify({'success': True})
 
 # ==================== BUSES ADMIN ROUTES ====================
@@ -339,13 +274,9 @@ def add_bus_route():
     arrival_time = request.form.get('arrival_time')
     price = request.form.get('price')
     
-    conn = get_db()
-    conn.execute(
-        'INSERT INTO buses (origin, destination, departure_time, arrival_time, price) VALUES (?, ?, ?, ?, ?)',
-        (origin, destination, departure_time, arrival_time, price)
-    )
-    conn.commit()
-    conn.close()
+    new_bus = Bus(origin=origin, destination=destination, departure_time=departure_time, arrival_time=arrival_time, price=price)
+    db.session.add(new_bus)
+    db.session.commit()
     
     flash('Bus route added successfully!', 'success')
     return redirect(url_for('admin'))
@@ -353,11 +284,9 @@ def add_bus_route():
 @app.route('/admin/bus/<int:id>/delete', methods=['POST'])
 def delete_bus(id):
     """Delete bus route"""
-    conn = get_db()
-    conn.execute('DELETE FROM buses WHERE id = ?', (id,))
-    conn.commit()
-    conn.close()
-    
+    bus = Bus.query.get_or_404(id)
+    db.session.delete(bus)
+    db.session.commit()
     return jsonify({'success': True})
 
 # ==================== TRAINS ADMIN ROUTES ====================
@@ -371,40 +300,141 @@ def add_train_route():
     arrival_time = request.form.get('arrival_time')
     price = request.form.get('price')
     
-    conn = get_db()
-    conn.execute(
-        'INSERT INTO trains (origin, destination, departure_time, arrival_time, price) VALUES (?, ?, ?, ?, ?)',
-        (origin, destination, departure_time, arrival_time, price)
-    )
-    conn.commit()
-    conn.close()
+    new_train = Train(origin=origin, destination=destination, departure_time=departure_time, arrival_time=arrival_time, price=price)
+    db.session.add(new_train)
+    db.session.commit()
     
     flash('Train route added successfully!', 'success')
     return redirect(url_for('admin'))
 
-# ==================== BOOKING ROUTES ====================
+@app.route('/admin/train/<int:id>/delete', methods=['POST'])
+def delete_train(id):
+    """Delete train route"""
+    train = Train.query.get_or_404(id)
+    db.session.delete(train)
+    db.session.commit()
+    return jsonify({'success': True})
+
+# ==================== GRUPO2 ADMIN ROUTES ====================
+
+@app.route('/admin/add/<string:service_type>', methods=['GET', 'POST'])
+def add_service(service_type):
+    """Add service (Grupo2 style)"""
+    if request.method == 'POST':
+        if service_type == 'experience':
+            new_item = ExperienciaCulinaria(
+                titulo=request.form['titulo'],
+                descripcion=request.form['descripcion'],
+                precio=float(request.form['precio']),
+                ubicacion=request.form['ubicacion'],
+                imagen=request.form['imagen'],
+                proveedor_id=1
+            )
+        elif service_type == 'hotel':
+            new_item = Hotel(
+                nombre=request.form['nombre'],
+                descripcion=request.form['descripcion'],
+                estrellas=int(request.form['estrellas']),
+                precio_noche=float(request.form['precio_noche']),
+                ubicacion=request.form['ubicacion'],
+                imagen=request.form['imagen'],
+                proveedor_id=1
+            )
+        elif service_type == 'house':
+            new_item = CasaAlquiler(
+                nombre=request.form['nombre'],
+                descripcion=request.form['descripcion'],
+                habitaciones=int(request.form['habitaciones']),
+                precio_dia=float(request.form['precio_dia']),
+                ubicacion=request.form['ubicacion'],
+                imagen=request.form['imagen'],
+                proveedor_id=1
+            )
+        
+        db.session.add(new_item)
+        db.session.commit()
+        flash(f'{service_type.capitalize()} added successfully!', 'success')
+        return redirect(url_for('admin_dashboard'))
+    
+    return render_template('admin/service_form.html', action='Add', type=service_type)
+
+@app.route('/admin/edit/<string:service_type>/<int:id>', methods=['GET', 'POST'])
+def edit_service(service_type, id):
+    """Edit service (Grupo2 style)"""
+    if service_type == 'experience':
+        item = ExperienciaCulinaria.query.get_or_404(id)
+    elif service_type == 'hotel':
+        item = Hotel.query.get_or_404(id)
+    elif service_type == 'house':
+        item = CasaAlquiler.query.get_or_404(id)
+    
+    if request.method == 'POST':
+        if service_type == 'experience':
+            item.titulo = request.form['titulo']
+            item.descripcion = request.form['descripcion']
+            item.precio = float(request.form['precio'])
+            item.ubicacion = request.form['ubicacion']
+            item.imagen = request.form['imagen']
+        elif service_type == 'hotel':
+            item.nombre = request.form['nombre']
+            item.descripcion = request.form['descripcion']
+            item.estrellas = int(request.form['estrellas'])
+            item.precio_noche = float(request.form['precio_noche'])
+            item.ubicacion = request.form['ubicacion']
+            item.imagen = request.form['imagen']
+        elif service_type == 'house':
+            item.nombre = request.form['nombre']
+            item.descripcion = request.form['descripcion']
+            item.habitaciones = int(request.form['habitaciones'])
+            item.precio_dia = float(request.form['precio_dia'])
+            item.ubicacion = request.form['ubicacion']
+            item.imagen = request.form['imagen']
+        
+        db.session.commit()
+        flash(f'{service_type.capitalize()} updated successfully!', 'success')
+        return redirect(url_for('admin_dashboard'))
+    
+    return render_template('admin/service_form.html', action='Edit', type=service_type, item=item)
+
+@app.route('/admin/delete/<string:service_type>/<int:id>')
+def delete_service(service_type, id):
+    """Delete service (Grupo2 style)"""
+    if service_type == 'experience':
+        item = ExperienciaCulinaria.query.get_or_404(id)
+    elif service_type == 'hotel':
+        item = Hotel.query.get_or_404(id)
+    elif service_type == 'house':
+        item = CasaAlquiler.query.get_or_404(id)
+    
+    db.session.delete(item)
+    db.session.commit()
+    flash(f'{service_type.capitalize()} deleted successfully!', 'danger')
+    return redirect(url_for('admin_dashboard'))
+
+# ==================== BOOKING ROUTES (Grupo1 style) ====================
 
 @app.route('/book/tour', methods=['POST'])
 def book_tour():
     """Book a tour"""
     tour_id = request.form.get('tour_id')
-    # Default values for now, as the form might be simple
     quantity = request.form.get('quantity', 1)
     
-    conn = get_db()
-    # Get tour price
-    tour = conn.execute('SELECT price FROM tours WHERE id = ?', (tour_id,)).fetchone()
+    tour = Tour.query.get(tour_id)
     if tour:
-        total_price = tour['price'] * int(quantity)
-        conn.execute(
-            "INSERT INTO reservations (service_type, service_id, quantity, total_price, status) VALUES (?, ?, ?, ?, ?)",
-            ('tour', tour_id, quantity, total_price, 'CONFIRMED')
+        total_price = tour.price * int(quantity)
+        new_reservation = Reservation(
+            user_id=1,
+            service_type='tour',
+            service_id=tour_id,
+            quantity=quantity,
+            total_price=total_price,
+            status='CONFIRMED'
         )
-        conn.commit()
+        db.session.add(new_reservation)
+        db.session.commit()
         flash('¡Tour reservado con éxito!', 'success')
     else:
         flash('Error: Tour no encontrado.', 'error')
-    conn.close()
     
     return redirect(url_for('reservations'))
 
@@ -415,11 +445,9 @@ def book_cruise():
     passengers = request.form.get('passengers', 1)
     cabin_type = request.form.get('cabin_type', 'interior')
     
-    conn = get_db()
-    cruise = conn.execute('SELECT price FROM cruises WHERE id = ?', (cruise_id,)).fetchone()
+    cruise = Cruise.query.get(cruise_id)
     if cruise:
-        # Simple price calculation logic
-        base_price = cruise['price']
+        base_price = cruise.price
         extra = 0
         if cabin_type == 'exterior': extra = 100
         elif cabin_type == 'balcony': extra = 250
@@ -427,15 +455,19 @@ def book_cruise():
         
         total_price = (base_price + extra) * int(passengers)
         
-        conn.execute(
-            "INSERT INTO reservations (service_type, service_id, quantity, total_price, status) VALUES (?, ?, ?, ?, ?)",
-            ('cruise', cruise_id, passengers, total_price, 'CONFIRMED')
+        new_reservation = Reservation(
+            user_id=1,
+            service_type='cruise',
+            service_id=cruise_id,
+            quantity=passengers,
+            total_price=total_price,
+            status='CONFIRMED'
         )
-        conn.commit()
+        db.session.add(new_reservation)
+        db.session.commit()
         flash('¡Crucero reservado con éxito!', 'success')
     else:
         flash('Error: Crucero no encontrado.', 'error')
-    conn.close()
     
     return redirect(url_for('reservations'))
 
@@ -445,19 +477,22 @@ def book_bus_ticket():
     bus_id = request.form.get('bus_id')
     quantity = request.form.get('quantity', 1)
     
-    conn = get_db()
-    bus = conn.execute('SELECT price FROM buses WHERE id = ?', (bus_id,)).fetchone()
+    bus = Bus.query.get(bus_id)
     if bus:
-        total_price = bus['price'] * int(quantity)
-        conn.execute(
-            "INSERT INTO reservations (service_type, service_id, quantity, total_price, status) VALUES (?, ?, ?, ?, ?)",
-            ('bus', bus_id, quantity, total_price, 'CONFIRMED')
+        total_price = bus.price * int(quantity)
+        new_reservation = Reservation(
+            user_id=1,
+            service_type='bus',
+            service_id=bus_id,
+            quantity=quantity,
+            total_price=total_price,
+            status='CONFIRMED'
         )
-        conn.commit()
+        db.session.add(new_reservation)
+        db.session.commit()
         flash('¡Billete de autobús reservado con éxito!', 'success')
     else:
         flash('Error: Ruta de autobús no encontrada.', 'error')
-    conn.close()
     
     return redirect(url_for('reservations'))
 
@@ -468,37 +503,39 @@ def book_train_ticket():
     quantity = request.form.get('quantity', 1)
     train_class = request.form.get('class', 'tourist')
     
-    conn = get_db()
-    train = conn.execute('SELECT price FROM trains WHERE id = ?', (train_id,)).fetchone()
+    train = Train.query.get(train_id)
     if train:
-        base_price = train['price']
+        base_price = train.price
         extra = 0
         if train_class == 'tourist_plus': extra = 15
         elif train_class == 'preferente': extra = 30
         
         total_price = (base_price + extra) * int(quantity)
         
-        conn.execute(
-            "INSERT INTO reservations (service_type, service_id, quantity, total_price, status) VALUES (?, ?, ?, ?, ?)",
-            ('train', train_id, quantity, total_price, 'CONFIRMED')
+        new_reservation = Reservation(
+            user_id=1,
+            service_type='train',
+            service_id=train_id,
+            quantity=quantity,
+            total_price=total_price,
+            status='CONFIRMED'
         )
-        conn.commit()
+        db.session.add(new_reservation)
+        db.session.commit()
         flash('¡Billete de tren reservado con éxito!', 'success')
     else:
         flash('Error: Ruta de tren no encontrada.', 'error')
-    conn.close()
     
     return redirect(url_for('reservations'))
 
 # ==================== MOCK AUTH ROUTES ====================
-# These are placeholders so the buttons work. The other group will implement real auth.
 
 @app.route('/login')
 def login():
     """Mock login"""
     from flask import session
     session['user_id'] = 1
-    session['role'] = 'ADMIN' # Default to ADMIN for easy testing
+    session['role'] = 'ADMIN'
     flash('Has iniciado sesión (Mock)', 'info')
     return redirect(url_for('index'))
 
@@ -515,19 +552,9 @@ def register():
     """Mock register"""
     return redirect(url_for('login'))
 
-# ==================== ADMIN ROUTES (Existing) ====================
-
-@app.route('/admin/train/<int:id>/delete', methods=['POST'])
-def delete_train(id):
-    """Delete train route"""
-    conn = get_db()
-    conn.execute('DELETE FROM trains WHERE id = ?', (id,))
-    conn.commit()
-    conn.close()
-    
-    return jsonify({'success': True})
-
 # ==================== RUN APP ====================
 
 if __name__ == '__main__':
+    if not os.path.exists('static/uploads'):
+        os.makedirs('static/uploads')
     app.run(debug=True, host='0.0.0.0', port=5000)
