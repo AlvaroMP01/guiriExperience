@@ -1,82 +1,277 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="hero" style="text-align: center; margin: 50px 0;">
-    <h1>Welcome to GuiriExperience</h1>
-    <p>Your one-stop shop for Tours, Stays, and Travel.</p>
-</div>
-
-<!-- Group 1 Services: Tours & Transport -->
-<section style="margin-bottom: 50px;">
-    <h2 style="text-align: center; margin-bottom: 20px;">Tours & Transport</h2>
-    <div class="services-grid"
-        style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px;">
-
-        <div class="card" onclick="window.location.href='{{ url_for('tours') }}'"
-            style="cursor: pointer; padding: 20px; border: 1px solid #ddd; border-radius: 10px; text-align: center;">
-            <div style="font-size: 3em;">🎫</div>
-            <h3>Tours</h3>
-            <p>Discover amazing guided tours.</p>
-            <a href="{{ url_for('tours') }}" class="btn">Explore</a>
-        </div>
-
-        <div class="card" onclick="window.location.href='{{ url_for('cruises') }}'"
-            style="cursor: pointer; padding: 20px; border: 1px solid #ddd; border-radius: 10px; text-align: center;">
-            <div style="font-size: 3em;">🚢</div>
-            <h3>Cruises</h3>
-            <p>Sail away on luxury cruises.</p>
-            <a href="{{ url_for('cruises') }}" class="btn">Browse</a>
-        </div>
-
-        <div class="card" onclick="window.location.href='{{ url_for('buses') }}'"
-            style="cursor: pointer; padding: 20px; border: 1px solid #ddd; border-radius: 10px; text-align: center;">
-            <div style="font-size: 3em;">🚌</div>
-            <h3>Buses</h3>
-            <p>Comfortable bus travel.</p>
-            <a href="{{ url_for('buses') }}" class="btn">Routes</a>
-        </div>
-
-        <div class="card" onclick="window.location.href='{{ url_for('trains') }}'"
-            style="cursor: pointer; padding: 20px; border: 1px solid #ddd; border-radius: 10px; text-align: center;">
-            <div style="font-size: 3em;">🚆</div>
-            <h3>Trains</h3>
-            <p>Fast and scenic train journeys.</p>
-            <a href="{{ url_for('trains') }}" class="btn">Schedules</a>
+<!-- Hero Section -->
+<section class="relative px-6 py-10 lg:px-20 lg:py-16">
+    <div class="mx-auto max-w-[1400px]">
+        <div class="relative flex min-h-[520px] flex-col items-center justify-center overflow-hidden rounded-xl bg-cover bg-center p-8 text-center"
+            data-alt="Tropical beach paradise with turquoise water"
+            style='background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.6)), url("https://lh3.googleusercontent.com/aida-public/AB6AXuDtLZARNRAVRTwtE6Ti_HfaUPbvXSw5yUNtcm1aIvx3NmXhi6zfbz1zYOcBflrknbqSQICJFCGucvhJ5sn34LUI7iz_6UmHLnYcVPaPPGdzV38l1PGzn5DFAvKm3CSdHXVAWYl3BWVXAxKuaG9Mua2l1HmbbXrhve2GGqDzaDH-AhyLdQ2Pl-iBWi5_ymeNxxUS-TIGhsS-gXl2ri_BxJ0BoJOfldLbBiZ7RAqJjWyWz_5VQgz9TjWSf-tj3xLjYqQ3ApKACzyquuc");'>
+            <div class="max-w-3xl space-y-6">
+                <h1 class="text-4xl font-black text-white md:text-6xl tracking-tight leading-tight">
+                    Explora el mundo con <span class="text-primary">Viajes Mundo</span>
+                </h1>
+                <p class="text-lg text-white/90 md:text-xl font-medium">
+                    Encuentra las mejores ofertas en vuelos, hoteles y experiencias personalizadas.
+                </p>
+                <!-- Search Bar -->
+                <div class="mx-auto mt-8 flex w-full max-w-2xl items-center gap-2 rounded-full bg-white p-2 shadow-2xl">
+                    <div class="flex flex-1 items-center px-4">
+                        <span class="material-symbols-outlined text-primary">location_on</span>
+                        <input
+                            class="w-full border-none bg-transparent text-[#1d160c] placeholder:text-gray-400 focus:ring-0"
+                            placeholder="¿A dónde quieres ir?" type="text" />
+                    </div>
+                    <div class="hidden h-10 w-[1px] bg-gray-200 md:block"></div>
+                    <div class="hidden flex-1 items-center px-4 md:flex">
+                        <span class="material-symbols-outlined text-primary">calendar_month</span>
+                        <input
+                            class="w-full border-none bg-transparent text-[#1d160c] placeholder:text-gray-400 focus:ring-0"
+                            placeholder="Fechas" type="text" />
+                    </div>
+                    <button
+                        class="flex h-12 min-w-[120px] items-center justify-center rounded-full bg-primary px-6 font-bold text-white transition-transform hover:scale-105">
+                        Buscar
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 </section>
 
-<!-- Group 2 Services: Stays & Experiences -->
-<section>
-    <h2 style="text-align: center; margin-bottom: 20px;">Stays & Culinary Experiences</h2>
-    <div class="grid services-grid"
-        style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px;">
-
-        <div class="card" onclick="location.href='{{ url_for('list_experiences') }}'"
-            style="cursor: pointer; padding: 20px; border: 1px solid #ddd; border-radius: 10px; text-align: center;">
-            <!-- Simple placeholder image connection if needed, otherwise rely on text/icon -->
-            <div style="font-size: 3em;">🍷</div>
-            <h3>Culinary Experiences</h3>
-            <p>Wine tastings, cooking classes, and more.</p>
-            <a href="{{ url_for('list_experiences') }}" class="btn">Taste</a>
-        </div>
-
-        <div class="card" onclick="location.href='{{ url_for('list_hotels') }}'"
-            style="cursor: pointer; padding: 20px; border: 1px solid #ddd; border-radius: 10px; text-align: center;">
-            <div style="font-size: 3em;">🏨</div>
-            <h3>Hotels</h3>
-            <p>Premium selection of hotels.</p>
-            <a href="{{ url_for('list_hotels') }}" class="btn">Stay</a>
-        </div>
-
-        <div class="card" onclick="location.href='{{ url_for('list_houses') }}'"
-            style="cursor: pointer; padding: 20px; border: 1px solid #ddd; border-radius: 10px; text-align: center;">
-            <div style="font-size: 3em;">🏡</div>
-            <h3>Rental Houses</h3>
-            <p>Escape to nature.</p>
-            <a href="{{ url_for('list_houses') }}" class="btn">Rent</a>
+<!-- Service Categories -->
+<section class="px-6 py-8 lg:px-20">
+    <div class="mx-auto max-w-[1400px]">
+        <div class="flex flex-wrap justify-between gap-4">
+            <div onclick="window.location.href='{{ url_for('tours') }}'"
+                class="flex flex-1 min-w-[140px] flex-col items-center gap-3 rounded-xl border border-[#eadecd] bg-white dark:bg-[#2d2417] p-6 transition-all hover:border-primary hover:shadow-lg group cursor-pointer">
+                <div
+                    class="flex h-14 w-14 items-center justify-center rounded-full bg-primary/10 text-primary group-hover:bg-primary group-hover:text-white transition-colors">
+                    <span class="material-symbols-outlined text-3xl">map</span>
+                </div>
+                <span class="font-bold">Tours</span>
+            </div>
+            <div onclick="window.location.href='{{ url_for('cruises') }}'"
+                class="flex flex-1 min-w-[140px] flex-col items-center gap-3 rounded-xl border border-[#eadecd] bg-white dark:bg-[#2d2417] p-6 transition-all hover:border-primary hover:shadow-lg group cursor-pointer">
+                <div
+                    class="flex h-14 w-14 items-center justify-center rounded-full bg-primary/10 text-primary group-hover:bg-primary group-hover:text-white transition-colors">
+                    <span class="material-symbols-outlined text-3xl">directions_boat</span>
+                </div>
+                <span class="font-bold">Cruceros</span>
+            </div>
+            <div onclick="window.location.href='{{ url_for('trains') }}'"
+                class="flex flex-1 min-w-[140px] flex-col items-center gap-3 rounded-xl border border-[#eadecd] bg-white dark:bg-[#2d2417] p-6 transition-all hover:border-primary hover:shadow-lg group cursor-pointer">
+                <div
+                    class="flex h-14 w-14 items-center justify-center rounded-full bg-primary/10 text-primary group-hover:bg-primary group-hover:text-white transition-colors">
+                    <span class="material-symbols-outlined text-3xl">train</span>
+                </div>
+                <span class="font-bold">Trenes</span>
+            </div>
+            <div onclick="window.location.href='{{ url_for('buses') }}'"
+                class="flex flex-1 min-w-[140px] flex-col items-center gap-3 rounded-xl border border-[#eadecd] bg-white dark:bg-[#2d2417] p-6 transition-all hover:border-primary hover:shadow-lg group cursor-pointer">
+                <div
+                    class="flex h-14 w-14 items-center justify-center rounded-full bg-primary/10 text-primary group-hover:bg-primary group-hover:text-white transition-colors">
+                    <span class="material-symbols-outlined text-3xl">directions_bus</span>
+                </div>
+                <span class="font-bold">Autobuses</span>
+            </div>
+            <div onclick="window.location.href='{{ url_for('list_experiences') }}'"
+                class="flex flex-1 min-w-[140px] flex-col items-center gap-3 rounded-xl border border-[#eadecd] bg-white dark:bg-[#2d2417] p-6 transition-all hover:border-primary hover:shadow-lg group cursor-pointer">
+                <div
+                    class="flex h-14 w-14 items-center justify-center rounded-full bg-primary/10 text-primary group-hover:bg-primary group-hover:text-white transition-colors">
+                    <span class="material-symbols-outlined text-3xl">confirmation_number</span>
+                </div>
+                <span class="font-bold">Experiencias</span>
+            </div>
+            <div onclick="window.location.href='{{ url_for('list_hotels') }}'"
+                class="flex flex-1 min-w-[140px] flex-col items-center gap-3 rounded-xl border border-[#eadecd] bg-white dark:bg-[#2d2417] p-6 transition-all hover:border-primary hover:shadow-lg group cursor-pointer">
+                <div
+                    class="flex h-14 w-14 items-center justify-center rounded-full bg-primary/10 text-primary group-hover:bg-primary group-hover:text-white transition-colors">
+                    <span class="material-symbols-outlined text-3xl">hotel</span>
+                </div>
+                <span class="font-bold">Hoteles</span>
+            </div>
+            <div onclick="window.location.href='{{ url_for('list_houses') }}'"
+                class="flex flex-1 min-w-[140px] flex-col items-center gap-3 rounded-xl border border-[#eadecd] bg-white dark:bg-[#2d2417] p-6 transition-all hover:border-primary hover:shadow-lg group cursor-pointer">
+                <div
+                    class="flex h-14 w-14 items-center justify-center rounded-full bg-primary/10 text-primary group-hover:bg-primary group-hover:text-white transition-colors">
+                    <span class="material-symbols-outlined text-3xl">cottage</span>
+                </div>
+                <span class="font-bold">Casas</span>
+            </div>
         </div>
     </div>
 </section>
 
+<!-- Featured Offers Section -->
+<section class="px-6 py-12 lg:px-20">
+    <div class="mx-auto max-w-[1400px]">
+        <div class="mb-10 flex items-center justify-between">
+            <div>
+                <h2 class="text-3xl font-bold tracking-tight">Ofertas Destacadas</h2>
+                <p class="mt-2 text-gray-500">Nuestras mejores selecciones para tu próximo viaje</p>
+            </div>
+            <button class="flex items-center gap-2 font-bold text-primary hover:underline">
+                Ver todas las ofertas
+                <span class="material-symbols-outlined">arrow_forward</span>
+            </button>
+        </div>
+        <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
+            <!-- Card 1 -->
+            <div
+                class="group flex flex-col overflow-hidden rounded-xl bg-white dark:bg-[#2d2417] shadow-sm transition-all hover:-translate-y-2 hover:shadow-xl">
+                <div class="relative aspect-[4/3] w-full bg-cover bg-center overflow-hidden"
+                    data-alt="Beautiful Bali landscape with temples"
+                    style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBp_BRFGbpoffUsUuOH4PoUxPZrJ2RFmRKn28OMNBKxuQQcwxixhPWwsgZqLyqtCc4ejEpAxA5yUSsgGw8BCfSmlFPpq3Ibs81Tpa-Kl3MNsfhXsywDlsyBUNkY1YvptwtEWqFKLd94LzzqkzBie_a0ur2-qg9HwzOFEZV04AnJapKEckWbr0Cg0wKLoYWcV_oJhjIiG0odcpXiyC7lmwW7PhP_-rKP1bwMZJ1qxMjFGumuTyBdtYIi0OB-NpLX17ZPcdbp5JPR6K4");'>
+                    <div
+                        class="absolute top-4 right-4 rounded-full bg-white/90 px-3 py-1 text-xs font-bold text-primary shadow-sm">
+                        -20% Hoy</div>
+                </div>
+                <div class="flex flex-1 flex-col p-6">
+                    <div class="mb-1 flex items-center gap-1 text-primary">
+                        <span class="material-symbols-outlined text-sm">star</span>
+                        <span class="material-symbols-outlined text-sm">star</span>
+                        <span class="material-symbols-outlined text-sm">star</span>
+                        <span class="material-symbols-outlined text-sm">star</span>
+                        <span class="material-symbols-outlined text-sm">star</span>
+                        <span class="ml-1 text-xs text-gray-500 font-medium">(1.2k reseñas)</span>
+                    </div>
+                    <h3 class="text-lg font-bold">Bali, Indonesia</h3>
+                    <p class="mt-1 text-sm text-gray-500">7 días • Todo incluido</p>
+                    <div class="mt-auto pt-6 flex items-center justify-between">
+                        <div class="flex flex-col">
+                            <span class="text-xs text-gray-400 line-through">1.500€</span>
+                            <span class="text-xl font-black text-primary">1.200€</span>
+                        </div>
+                        <button
+                            class="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary transition-colors hover:bg-primary hover:text-white">
+                            <span class="material-symbols-outlined">add</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <!-- Card 2 -->
+            <div
+                class="group flex flex-col overflow-hidden rounded-xl bg-white dark:bg-[#2d2417] shadow-sm transition-all hover:-translate-y-2 hover:shadow-xl">
+                <div class="relative aspect-[4/3] w-full bg-cover bg-center overflow-hidden"
+                    data-alt="Eiffel Tower in Paris at sunset"
+                    style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDtgqKILSNkOJ7Wf6VesJiUl7K7mzlu9qKeUiFsX0eG3aPwkjqzSBSTFZOxDuSoSkrGPPeBtIsyoq98i8D13ZQu0is_dBExC2e4EpFptMmnpV1-Mpvk81jXaWQQcNc9Z5OP_MHhIQzhnwlxt6DWIAa4S1TqFwzM5c6rbGLVYeIZaaqmAWtyE7O8RbB4R0H0xN75joUJI05InN-n28uVWhDMzR_6bdpeMlPBf2K4iRYukwxUMT5SNXQ6kr74lWGAUMfDGbk1wGDjPv4");'>
+                </div>
+                <div class="flex flex-1 flex-col p-6">
+                    <div class="mb-1 flex items-center gap-1 text-primary">
+                        <span class="material-symbols-outlined text-sm">star</span>
+                        <span class="material-symbols-outlined text-sm">star</span>
+                        <span class="material-symbols-outlined text-sm">star</span>
+                        <span class="material-symbols-outlined text-sm">star</span>
+                        <span class="material-symbols-outlined text-sm">star_half</span>
+                        <span class="ml-1 text-xs text-gray-500 font-medium">(840 reseñas)</span>
+                    </div>
+                    <h3 class="text-lg font-bold">París, Francia</h3>
+                    <p class="mt-1 text-sm text-gray-500">4 días • Escapada romántica</p>
+                    <div class="mt-auto pt-6 flex items-center justify-between">
+                        <span class="text-xl font-black text-primary">850€</span>
+                        <button
+                            class="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary transition-colors hover:bg-primary hover:text-white">
+                            <span class="material-symbols-outlined">add</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <!-- Card 3 -->
+            <div
+                class="group flex flex-col overflow-hidden rounded-xl bg-white dark:bg-[#2d2417] shadow-sm transition-all hover:-translate-y-2 hover:shadow-xl">
+                <div class="relative aspect-[4/3] w-full bg-cover bg-center overflow-hidden"
+                    data-alt="New York City skyline with Brooklyn Bridge"
+                    style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCpMgB0_XEjSyvEPZsb2dse7vf7CyBaYJjBnjmyFKCiKqacDI7XE720YbJePXiWump3SQkCAFpVycTyCC_Q2ys7zd8Ax8BYoGduqz29Uso2s66sN8Qc22zSRbNOAseGk7opgxfBuHgi5MW3S8zGHcjnfZu6uOczQ-6p9_dameswX5m2tcmU4pFJJUJhu9q4QtD3T9yH1ET6wqIfJI5S4NHEamVYESnxaZteG1GfZMaZ9pHzyWv_2mS166SXMaxBPwPL0Yg64K5qVpU");'>
+                </div>
+                <div class="flex flex-1 flex-col p-6">
+                    <div class="mb-1 flex items-center gap-1 text-primary">
+                        <span class="material-symbols-outlined text-sm">star</span>
+                        <span class="material-symbols-outlined text-sm">star</span>
+                        <span class="material-symbols-outlined text-sm">star</span>
+                        <span class="material-symbols-outlined text-sm">star</span>
+                        <span class="material-symbols-outlined text-sm">star</span>
+                        <span class="ml-1 text-xs text-gray-500 font-medium">(2.1k reseñas)</span>
+                    </div>
+                    <h3 class="text-lg font-bold">Nueva York, EE.UU.</h3>
+                    <p class="mt-1 text-sm text-gray-500">5 días • City break</p>
+                    <div class="mt-auto pt-6 flex items-center justify-between">
+                        <span class="text-xl font-black text-primary">1.100€</span>
+                        <button
+                            class="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary transition-colors hover:bg-primary hover:text-white">
+                            <span class="material-symbols-outlined">add</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <!-- Card 4 -->
+            <div
+                class="group flex flex-col overflow-hidden rounded-xl bg-white dark:bg-[#2d2417] shadow-sm transition-all hover:-translate-y-2 hover:shadow-xl">
+                <div class="relative aspect-[4/3] w-full bg-cover bg-center overflow-hidden"
+                    data-alt="Kyoto temple with cherry blossoms"
+                    style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDrZAlErpN-0RRQ9ztCQRkvuVHVJ2vUawdk19vaRJztWdfR41qope_fnbe0Ozu8hH7zHoXygG_Z5J0inr8p17eX5zt8NyBXYqfwutMfIOLk8oulKDWNFzcxUlzilZyb7WlsJIWSO15QlxApbjgQvYmjKst7CVyWYqbs8uG8Oi3xvFPZ38nDHNRopfA7Bco04bMQPkI9ZRDSmmTXrvLlVH0Wv1g1ndvYep2eFdaKz4AJBEdF1WgfWZKZTzEEfUXEZrjCdxXQZgQiNAw");'>
+                    <div
+                        class="absolute top-4 left-4 rounded-full bg-primary px-3 py-1 text-xs font-bold text-white shadow-sm">
+                        Popular</div>
+                </div>
+                <div class="flex flex-1 flex-col p-6">
+                    <div class="mb-1 flex items-center gap-1 text-primary">
+                        <span class="material-symbols-outlined text-sm">star</span>
+                        <span class="material-symbols-outlined text-sm">star</span>
+                        <span class="material-symbols-outlined text-sm">star</span>
+                        <span class="material-symbols-outlined text-sm">star</span>
+                        <span class="material-symbols-outlined text-sm">star</span>
+                        <span class="ml-1 text-xs text-gray-500 font-medium">(560 reseñas)</span>
+                    </div>
+                    <h3 class="text-lg font-bold">Tokio, Japón</h3>
+                    <p class="mt-1 text-sm text-gray-500">8 días • Tour cultural</p>
+                    <div class="mt-auto pt-6 flex items-center justify-between">
+                        <span class="text-xl font-black text-primary">1.500€</span>
+                        <button
+                            class="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary transition-colors hover:bg-primary hover:text-white">
+                            <span class="material-symbols-outlined">add</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Gestión de Viajes / Admin Call-to-Action -->
+<section class="px-6 py-12 lg:px-20">
+    <div class="mx-auto max-w-[1400px]">
+        <div
+            class="flex flex-col items-center justify-between gap-8 rounded-xl bg-[#2d2417] p-10 text-white md:flex-row lg:p-16">
+            <div class="space-y-4 max-w-xl">
+                <h2 class="text-3xl font-extrabold tracking-tight">Gestión de viajes</h2>
+                <p class="text-lg text-gray-300">
+                    Accede a las herramientas de administración para gestionar reservas, clientes y paquetes turísticos
+                    de manera eficiente.
+                </p>
+                <div class="flex items-center gap-6 pt-4">
+                    <div class="flex items-center gap-2">
+                        <span class="material-symbols-outlined text-primary">check_circle</span>
+                        <span class="text-sm">Control total</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="material-symbols-outlined text-primary">check_circle</span>
+                        <span class="text-sm">Análisis en tiempo real</span>
+                    </div>
+                </div>
+            </div>
+            <div class="flex w-full flex-col gap-4 sm:w-auto">
+                <a href="{{ url_for('admin') }}"
+                    class="flex min-w-[200px] items-center justify-center gap-2 rounded-full bg-primary px-8 py-4 font-bold text-white transition-all hover:scale-105 active:scale-95">
+                    <span class="material-symbols-outlined">dashboard</span>
+                    Acceder al Panel
+                </a>
+                <button
+                    class="flex min-w-[200px] items-center justify-center gap-2 rounded-full border-2 border-white/20 px-8 py-4 font-bold text-white transition-all hover:bg-white/10">
+                    Soporte Técnico
+                </button>
+            </div>
+        </div>
+    </div>
+</section>
 {% endblock %}
