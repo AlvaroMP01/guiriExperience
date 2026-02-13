@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cruises - GuiriExperience</title>
+    <title>Cruceros - GuiriExperience</title>
     <style>
         * {
             margin: 0;
@@ -182,19 +182,19 @@
 <body>
     <header>
         <div class="header-content">
-            <h1>🚢 Cruise Booking</h1>
+            <h1>🚢 Reserva de cruceros</h1>
             <nav>
-                <a href="{{ url_for('index') }}">🏠 Home</a>
+                <a href="{{ url_for('index') }}">Inicio</a>
                 {% if session.get('user_id') %}
                 <span class="user-info">{{ session.get('role') }}</span> |
                 {% if session.get('role') in ['ADMIN', 'CRUISE_SELLER'] %}
-                <a href="{{ url_for('admin_cruises') }}">Admin Panel</a>
+                <a href="{{ url_for('admin') }}">Panel de administración</a>
                 {% endif %}
-                <a href="{{ url_for('reservations') }}">My Reservations</a>
-                <a href="{{ url_for('logout') }}">Logout</a>
+                <a href="{{ url_for('reservations') }}">Mis reservas</a>
+                <a href="{{ url_for('logout') }}">Cerrar sesión</a>
                 {% else %}
-                <a href="{{ url_for('login') }}">Login</a>
-                <a href="{{ url_for('register') }}">Register</a>
+                <a href="{{ url_for('login') }}">Iniciar sesión</a>
+                <a href="{{ url_for('register') }}">Registrarse</a>
                 {% endif %}
             </nav>
         </div>
@@ -203,32 +203,32 @@
     <main>
         <!-- Search Section -->
         <div class="section">
-            <h2>🔍 Search Cruises</h2>
+            <h2>🔍 Buscar cruceros</h2>
             <div class="search-bar">
-                <input type="text" id="search-destination" placeholder="Search by destination or ship...">
-                <input type="date" id="search-date" placeholder="Departure date">
+                <input type="text" id="search-destination" placeholder="Buscar por destino o barco...">
+                <input type="date" id="search-date" placeholder="Fecha de salida">
                 <select id="search-duration">
-                    <option value="">All Durations</option>
-                    <option value="1-7">1-7 days</option>
-                    <option value="8-14">8-14 days</option>
-                    <option value="15-30">15-30 days</option>
-                    <option value="30+">30+ days</option>
+                    <option value="">Todas las duraciones</option>
+                    <option value="1-7">1-7 días</option>
+                    <option value="8-14">8-14 días</option>
+                    <option value="15-30">15-30 días</option>
+                    <option value="30+">30+ días</option>
                 </select>
-                <button onclick="searchCruises()">Search</button>
+                <button onclick="searchCruises()">Buscar</button>
             </div>
         </div>
 
         <!-- Cruises List -->
         <div class="section">
-            <h2>📋 Available Itineraries</h2>
+            <h2>📋 Itinerarios disponibles</h2>
             <table>
                 <thead>
                     <tr>
-                        <th>Destination</th>
-                        <th>Ship</th>
-                        <th>Departure Date</th>
-                        <th>Duration</th>
-                        <th>Base Price</th>
+                        <th>Destino</th>
+                        <th>Barco</th>
+                        <th>Fecha de salida</th>
+                        <th>Duración</th>
+                        <th>Precio base</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -237,12 +237,12 @@
                         <td>{{ cruise.destination }}</td>
                         <td>{{ cruise.ship }}</td>
                         <td>{{ cruise.departure_date }}</td>
-                        <td>{{ cruise.duration }} days</td>
+                        <td>{{ cruise.duration }} días</td>
                         <td>{{ cruise.price }} €</td>
                     </tr>
                     {% else %}
                     <tr>
-                        <td colspan="5" style="text-align: center;">No cruises scheduled soon.</td>
+                        <td colspan="5" style="text-align: center;">No hay cruceros programados pronto.</td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -251,13 +251,13 @@
 
         <!-- Booking Form -->
         <div class="section">
-            <h2>🎟️ Book Your Cabin</h2>
+            <h2>🎟️ Reserva tu camarote</h2>
             <form action="{{ url_for('book_cruise') }}" method="POST" class="booking-form">
                 <div class="form-grid">
                     <div class="form-group">
-                        <label for="cruise_id">Select Cruise *</label>
+                        <label for="cruise_id">Seleccionar crucero *</label>
                         <select name="cruise_id" id="cruise_id" required>
-                            <option value="">-- Choose destination and ship --</option>
+                            <option value="">-- Elige destino y barco --</option>
                             {% for cruise in cruises %}
                             <option value="{{ cruise.id }}">
                                 {{ cruise.destination }} - {{ cruise.ship }} ({{ cruise.departure_date }})
@@ -267,22 +267,22 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="passengers">Number of Passengers *</label>
+                        <label for="passengers">Número de pasajeros *</label>
                         <input type="number" name="passengers" id="passengers" min="1" max="10" value="2" required>
                     </div>
 
                     <div class="form-group">
-                        <label for="cabin_type">Cabin Type *</label>
+                        <label for="cabin_type">Tipo de camarote *</label>
                         <select name="cabin_type" id="cabin_type">
-                            <option value="interior">Interior (Base Price)</option>
+                            <option value="interior">Interior (Precio base)</option>
                             <option value="exterior">Exterior (+100€)</option>
-                            <option value="balcony">With Balcony (+250€)</option>
+                            <option value="balcony">Con balcón (+250€)</option>
                             <option value="suite">Suite (+500€)</option>
                         </select>
                     </div>
                 </div>
 
-                <button type="submit" class="btn-submit">Confirm Reservation</button>
+                <button type="submit" class="btn-submit">Confirmar reserva</button>
             </form>
         </div>
     </main>

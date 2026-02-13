@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Reservations - GuiriExperience</title>
+    <title>Mis Reservas - GuiriExperience</title>
     <style>
         * {
             margin: 0;
@@ -239,31 +239,6 @@
             font-size: 1.1em;
         }
 
-        .stats-overview {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-
-        .stat-card {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 25px;
-            border-radius: 10px;
-            text-align: center;
-        }
-
-        .stat-card h3 {
-            font-size: 2.5em;
-            margin-bottom: 10px;
-        }
-
-        .stat-card p {
-            font-size: 1em;
-            opacity: 0.9;
-        }
-
         .price-tag {
             font-size: 1.3em;
             font-weight: bold;
@@ -275,106 +250,74 @@
 <body>
     <header>
         <div class="header-content">
-            <h1>📋 My Reservations</h1>
+            <h1>📋 Mis Reservas</h1>
             <nav>
-                <a href="{{ url_for('index') }}">🏠 Home</a>
+                <a href="{{ url_for('index') }}">Inicio</a>
                 {% if session.get('role') in ['ADMIN', 'TOUR_SELLER', 'CRUISE_SELLER', 'BUS_SELLER', 'TRAIN_SELLER'] %}
-                <a href="{{ url_for('index') }}#admin">Admin Panel</a>
+                <a href="{{ url_for('admin') }}">Panel Admin</a>
                 {% endif %}
-                <a href="{{ url_for('logout') }}">Logout</a>
+                <a href="{{ url_for('logout') }}">Cerrar Sesión</a>
             </nav>
         </div>
     </header>
 
     <main>
-        <!-- Statistics Overview -->
-        <div class="stats-overview">
-            <div class="stat-card">
-                <h3>{{ total_reservations|default(0) }}</h3>
-                <p>Total Reservations</p>
-            </div>
-            <div class="stat-card">
-                <h3>{{ active_reservations|default(0) }}</h3>
-                <p>Active</p>
-            </div>
-            <div class="stat-card">
-                <h3>{{ completed_reservations|default(0) }}</h3>
-                <p>Completed</p>
-            </div>
-            <div class="stat-card">
-                <h3>{{ total_spent|default(0) }} €</h3>
-                <p>Total Spent</p>
-            </div>
-        </div>
-
         <!-- Filters -->
         <div class="section">
-            <h2>🔍 Filter Reservations</h2>
+            <h2>🔍 Filtrar Reservas</h2>
             <div class="filter-bar">
                 <select id="filter-type">
-                    <option value="">All Types</option>
+                    <option value="">Todos los tipos</option>
                     <option value="tour">Tours</option>
-                    <option value="cruise">Cruises</option>
-                    <option value="bus">Buses</option>
-                    <option value="train">Trains</option>
+                    <option value="cruise">Cruceros</option>
+                    <option value="bus">Autobuses</option>
+                    <option value="train">Trenes</option>
                 </select>
 
                 <select id="filter-status">
-                    <option value="">All Status</option>
-                    <option value="confirmed">Confirmed</option>
-                    <option value="pending">Pending</option>
-                    <option value="cancelled">Cancelled</option>
-                    <option value="completed">Completed</option>
+                    <option value="">Todos los estados</option>
+                    <option value="CONFIRMED">Confirmado</option>
+                    <option value="PENDING">Pendiente</option>
+                    <option value="CANCELLED">Cancelado</option>
+                    <option value="COMPLETED">Completado</option>
                 </select>
 
-                <input type="date" id="filter-date" placeholder="Filter by date">
+                <input type="date" id="filter-date" placeholder="Filtrar por fecha">
             </div>
         </div>
 
         <!-- Reservations List -->
         <div class="section">
-            <h2>📝 All Reservations</h2>
+            <h2>📝 Todas las Reservas</h2>
             <div class="reservations-grid">
                 {% if reservations %}
                 {% for reservation in reservations %}
-                <div class="reservation-card" data-type="{{ reservation.type }}" data-status="{{ reservation.status }}">
+                <div class="reservation-card" data-type="{{ reservation.service_type }}"
+                    data-status="{{ reservation.status }}">
                     <div class="reservation-icon">
-                        {% if reservation.type == 'tour' %}🎫
-                        {% elif reservation.type == 'cruise' %}🚢
-                        {% elif reservation.type == 'bus' %}🚌
-                        {% elif reservation.type == 'train' %}🚆
+                        {% if reservation.service_type == 'tour' %}🎫
+                        {% elif reservation.service_type == 'cruise' %}🚢
+                        {% elif reservation.service_type == 'bus' %}🚌
+                        {% elif reservation.service_type == 'train' %}🚆
                         {% endif %}
                     </div>
 
                     <div class="reservation-details">
-                        <h3>{{ reservation.name }}</h3>
-                        <span class="status-badge status-{{ reservation.status }}">{{ reservation.status|upper }}</span>
+                        <h3>{{ reservation.detail }}</h3>
+                        <span class="status-badge status-{{ reservation.status|lower }}">{{ reservation.status }}</span>
 
                         <div class="detail-row">
                             <div class="detail-item">
-                                <strong>📅 Date:</strong> {{ reservation.date }}
+                                <strong>📅 Fecha Reserva:</strong> {{ reservation.created_at }}
                             </div>
-                            {% if reservation.time %}
                             <div class="detail-item">
-                                <strong>🕐 Time:</strong> {{ reservation.time }}
-                            </div>
-                            {% endif %}
-                            <div class="detail-item">
-                                <strong>👥 Passengers:</strong> {{ reservation.passengers }}
+                                <strong>👥 Cantidad:</strong> {{ reservation.quantity }}
                             </div>
                         </div>
 
-                        {% if reservation.route %}
                         <div class="detail-row">
                             <div class="detail-item">
-                                <strong>📍 Route:</strong> {{ reservation.route }}
-                            </div>
-                        </div>
-                        {% endif %}
-
-                        <div class="detail-row">
-                            <div class="detail-item">
-                                <strong>🆔 Booking ID:</strong> {{ reservation.id }}
+                                <strong>🆔 ID Reserva:</strong> {{ reservation.id }}
                             </div>
                             <div class="detail-item">
                                 <span class="price-tag">{{ reservation.total_price }} €</span>
@@ -383,13 +326,9 @@
                     </div>
 
                     <div class="reservation-actions">
-                        <button class="btn btn-view"
-                            onclick="viewReservation({{ reservation.id }}, '{{ reservation.type }}')">View
-                            Details</button>
-                        <button class="btn btn-download" onclick="downloadTicket({{ reservation.id }})">Download
-                            Ticket</button>
-                        {% if reservation.status in ['confirmed', 'pending'] %}
-                        <button class="btn btn-cancel" onclick="cancelReservation({{ reservation.id }})">Cancel</button>
+                        {% if reservation.status in ['CONFIRMED', 'PENDING'] %}
+                        <button class="btn btn-cancel"
+                            onclick="alert('Funcionalidad de cancelar no implementada aún en la demo.')">Cancelar</button>
                         {% endif %}
                     </div>
                 </div>
@@ -397,9 +336,9 @@
                 {% else %}
                 <div class="empty-state">
                     <div class="empty-state-icon">📭</div>
-                    <h3>No Reservations Yet</h3>
-                    <p>You haven't made any reservations yet. Start exploring our services!</p>
-                    <a href="{{ url_for('index') }}" class="btn">Explore Services</a>
+                    <h3>No tienes reservas todavía</h3>
+                    <p>¡No has hecho ninguna reserva! Empieza a explorar nuestros servicios.</p>
+                    <a href="{{ url_for('index') }}" class="btn">Explorar Servicios</a>
                 </div>
                 {% endif %}
             </div>
@@ -422,13 +361,12 @@
             cards.forEach(card => {
                 const cardType = card.dataset.type;
                 const cardStatus = card.dataset.status;
-                const cardDate = card.querySelector('.detail-item strong:contains("Date:")').nextSibling.textContent.trim();
 
                 let show = true;
 
                 if (type && cardType !== type) show = false;
                 if (status && cardStatus !== status) show = false;
-                if (date && cardDate !== date) show = false;
+                // Date filtering simplified for demo
 
                 card.style.display = show ? 'grid' : 'none';
             });
@@ -437,29 +375,6 @@
         filterType.addEventListener('change', filterReservations);
         filterStatus.addEventListener('change', filterReservations);
         filterDate.addEventListener('change', filterReservations);
-
-        function viewReservation(id, type) {
-            window.location.href = `/reservations/${type}/${id}`;
-        }
-
-        function downloadTicket(id) {
-            window.location.href = `/reservations/${id}/download`;
-        }
-
-        function cancelReservation(id) {
-            if (confirm('Are you sure you want to cancel this reservation?')) {
-                fetch(`/reservations/${id}/cancel`, {
-                    method: 'POST'
-                }).then(response => {
-                    if (response.ok) {
-                        alert('Reservation cancelled successfully');
-                        location.reload();
-                    } else {
-                        alert('Error cancelling reservation');
-                    }
-                });
-            }
-        }
     </script>
 </body>
 

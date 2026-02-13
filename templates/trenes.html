@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Train Booking - GuiriExperience</title>
+    <title>Reserva de Trenes - GuiriExperience</title>
     <style>
         * {
             margin: 0;
@@ -182,19 +182,19 @@
 <body>
     <header>
         <div class="header-content">
-            <h1>🚆 Train Booking</h1>
+            <h1>🚆 Reserva de Trenes</h1>
             <nav>
-                <a href="{{ url_for('index') }}">🏠 Home</a>
+                <a href="{{ url_for('index') }}">Inicio</a>
                 {% if session.get('user_id') %}
                 <span class="user-info">{{ session.get('role') }}</span> |
                 {% if session.get('role') in ['ADMIN', 'TRAIN_SELLER'] %}
-                <a href="{{ url_for('admin_trains') }}">Admin Panel</a>
+                <a href="{{ url_for('admin') }}">Panel Admin</a>
                 {% endif %}
-                <a href="{{ url_for('reservations') }}">My Reservations</a>
-                <a href="{{ url_for('logout') }}">Logout</a>
+                <a href="{{ url_for('reservations') }}">Mis Reservas</a>
+                <a href="{{ url_for('logout') }}">Cerrar Sesión</a>
                 {% else %}
-                <a href="{{ url_for('login') }}">Login</a>
-                <a href="{{ url_for('register') }}">Register</a>
+                <a href="{{ url_for('login') }}">Iniciar Sesión</a>
+                <a href="{{ url_for('register') }}">Registrarse</a>
                 {% endif %}
             </nav>
         </div>
@@ -203,26 +203,26 @@
     <main>
         <!-- Search Section -->
         <div class="section">
-            <h2>🔍 Search Routes</h2>
+            <h2>🔍 Buscar Rutas</h2>
             <div class="search-bar">
-                <input type="text" id="search-origin" placeholder="Origin station...">
-                <input type="text" id="search-destination" placeholder="Destination station...">
-                <input type="time" id="search-time" placeholder="Departure time">
-                <button onclick="searchTrains()">Search</button>
+                <input type="text" id="search-origin" placeholder="Estación de origen...">
+                <input type="text" id="search-destination" placeholder="Estación de destino...">
+                <input type="time" id="search-time" placeholder="Hora de salida">
+                <button onclick="searchTrains()">Buscar</button>
             </div>
         </div>
 
         <!-- Routes List -->
         <div class="section">
-            <h2>📋 Schedules and Routes</h2>
+            <h2>📋 Horarios y Rutas</h2>
             <table>
                 <thead>
                     <tr>
-                        <th>Origin</th>
-                        <th>Destination</th>
-                        <th>Departure</th>
-                        <th>Arrival</th>
-                        <th>Price</th>
+                        <th>Origen</th>
+                        <th>Destino</th>
+                        <th>Salida</th>
+                        <th>Llegada</th>
+                        <th>Precio</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -236,7 +236,7 @@
                     </tr>
                     {% else %}
                     <tr>
-                        <td colspan="5" style="text-align: center;">No routes available today.</td>
+                        <td colspan="5" style="text-align: center;">No hay rutas disponibles hoy.</td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -245,13 +245,13 @@
 
         <!-- Booking Form -->
         <div class="section">
-            <h2>🎟️ Buy Ticket</h2>
+            <h2>🎟️ Comprar Billete</h2>
             <form action="{{ url_for('book_train_ticket') }}" method="POST" class="booking-form">
                 <div class="form-grid">
                     <div class="form-group">
-                        <label for="train_id">Select Route *</label>
+                        <label for="train_id">Seleccionar Ruta *</label>
                         <select name="train_id" id="train_id" required>
-                            <option value="">-- Choose origin and destination --</option>
+                            <option value="">-- Elige origen y destino --</option>
                             {% for train in trains %}
                             <option value="{{ train.id }}">
                                 {{ train.origin }} → {{ train.destination }} ({{ train.departure_time }})
@@ -261,21 +261,21 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="quantity">Number of Tickets *</label>
+                        <label for="quantity">Cantidad de Billetes *</label>
                         <input type="number" name="quantity" id="quantity" min="1" max="10" value="1" required>
                     </div>
 
                     <div class="form-group">
-                        <label for="class">Class *</label>
+                        <label for="class">Clase *</label>
                         <select name="class" id="class">
-                            <option value="tourist">Tourist</option>
-                            <option value="tourist_plus">Tourist Plus (+15€)</option>
+                            <option value="tourist">Turista</option>
+                            <option value="tourist_plus">Turista Plus (+15€)</option>
                             <option value="preferente">Preferente (+30€)</option>
                         </select>
                     </div>
                 </div>
 
-                <button type="submit" class="btn-submit">Reserve and Pay</button>
+                <button type="submit" class="btn-submit">Reservar y Pagar</button>
             </form>
         </div>
     </main>

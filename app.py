@@ -200,8 +200,37 @@ def trains():
 
 @app.route('/reservations')
 def reservations():
-    """Reservations page - for now just shows the template"""
-    return render_template('reservas.html', reservations=[])
+    """Reservations page"""
+    conn = get_db()
+    # Fetch reservations with some details (simplified for now)
+    reservations_data = conn.execute('SELECT * FROM reservations ORDER BY created_at DESC').fetchall()
+    
+    # Enrich data with service details manually since we have separate tables
+    reservations = []
+    for res in reservations_data:
+        res_dict = dict(res)
+        service_id = res['service_id']
+        service_type = res['service_type']
+        
+        detail = "Servicio desconocido"
+        if service_type == 'tour':
+            item = conn.execute('SELECT name FROM tours WHERE id = ?', (service_id,)).fetchone()
+            if item: detail = f"Tour: {item['name']}"
+        elif service_type == 'cruise':
+            item = conn.execute('SELECT destination, ship FROM cruises WHERE id = ?', (service_id,)).fetchone()
+            if item: detail = f"Crucero: {item['destination']} ({item['ship']})"
+        elif service_type == 'bus':
+            item = conn.execute('SELECT origin, destination FROM buses WHERE id = ?', (service_id,)).fetchone()
+            if item: detail = f"Bus: {item['origin']} -> {item['destination']}"
+        elif service_type == 'train':
+            item = conn.execute('SELECT origin, destination FROM trains WHERE id = ?', (service_id,)).fetchone()
+            if item: detail = f"Tren: {item['origin']} -> {item['destination']}"
+            
+        res_dict['detail'] = detail
+        reservations.append(res_dict)
+        
+    conn.close()
+    return render_template('reservas.html', reservations=reservations)
 
 # ==================== ADMIN ROUTES ====================
 
@@ -352,6 +381,141 @@ def add_train_route():
     
     flash('Train route added successfully!', 'success')
     return redirect(url_for('admin'))
+
+# ==================== BOOKING ROUTES ====================
+
+@app.route('/book/tour', methods=['POST'])
+def book_tour():
+    """Book a tour"""
+    tour_id = request.form.get('tour_id')
+    # Default values for now, as the form might be simple
+    quantity = request.form.get('quantity', 1)
+    
+    conn = get_db()
+    # Get tour price
+    tour = conn.execute('SELECT price FROM tours WHERE id = ?', (tour_id,)).fetchone()
+    if tour:
+        total_price = tour['price'] * int(quantity)
+        conn.execute(
+            "INSERT INTO reservations (service_type, service_id, quantity, total_price, status) VALUES (?, ?, ?, ?, ?)",
+            ('tour', tour_id, quantity, total_price, 'CONFIRMED')
+        )
+        conn.commit()
+        flash('¡Tour reservado con éxito!', 'success')
+    else:
+        flash('Error: Tour no encontrado.', 'error')
+    conn.close()
+    
+    return redirect(url_for('reservations'))
+
+@app.route('/book/cruise', methods=['POST'])
+def book_cruise():
+    """Book a cruise"""
+    cruise_id = request.form.get('cruise_id')
+    passengers = request.form.get('passengers', 1)
+    cabin_type = request.form.get('cabin_type', 'interior')
+    
+    conn = get_db()
+    cruise = conn.execute('SELECT price FROM cruises WHERE id = ?', (cruise_id,)).fetchone()
+    if cruise:
+        # Simple price calculation logic
+        base_price = cruise['price']
+        extra = 0
+        if cabin_type == 'exterior': extra = 100
+        elif cabin_type == 'balcony': extra = 250
+        elif cabin_type == 'suite': extra = 500
+        
+        total_price = (base_price + extra) * int(passengers)
+        
+        conn.execute(
+            "INSERT INTO reservations (service_type, service_id, quantity, total_price, status) VALUES (?, ?, ?, ?, ?)",
+            ('cruise', cruise_id, passengers, total_price, 'CONFIRMED')
+        )
+        conn.commit()
+        flash('¡Crucero reservado con éxito!', 'success')
+    else:
+        flash('Error: Crucero no encontrado.', 'error')
+    conn.close()
+    
+    return redirect(url_for('reservations'))
+
+@app.route('/book/bus', methods=['POST'])
+def book_bus_ticket():
+    """Book a bus ticket"""
+    bus_id = request.form.get('bus_id')
+    quantity = request.form.get('quantity', 1)
+    
+    conn = get_db()
+    bus = conn.execute('SELECT price FROM buses WHERE id = ?', (bus_id,)).fetchone()
+    if bus:
+        total_price = bus['price'] * int(quantity)
+        conn.execute(
+            "INSERT INTO reservations (service_type, service_id, quantity, total_price, status) VALUES (?, ?, ?, ?, ?)",
+            ('bus', bus_id, quantity, total_price, 'CONFIRMED')
+        )
+        conn.commit()
+        flash('¡Billete de autobús reservado con éxito!', 'success')
+    else:
+        flash('Error: Ruta de autobús no encontrada.', 'error')
+    conn.close()
+    
+    return redirect(url_for('reservations'))
+
+@app.route('/book/train', methods=['POST'])
+def book_train_ticket():
+    """Book a train ticket"""
+    train_id = request.form.get('train_id')
+    quantity = request.form.get('quantity', 1)
+    train_class = request.form.get('class', 'tourist')
+    
+    conn = get_db()
+    train = conn.execute('SELECT price FROM trains WHERE id = ?', (train_id,)).fetchone()
+    if train:
+        base_price = train['price']
+        extra = 0
+        if train_class == 'tourist_plus': extra = 15
+        elif train_class == 'preferente': extra = 30
+        
+        total_price = (base_price + extra) * int(quantity)
+        
+        conn.execute(
+            "INSERT INTO reservations (service_type, service_id, quantity, total_price, status) VALUES (?, ?, ?, ?, ?)",
+            ('train', train_id, quantity, total_price, 'CONFIRMED')
+        )
+        conn.commit()
+        flash('¡Billete de tren reservado con éxito!', 'success')
+    else:
+        flash('Error: Ruta de tren no encontrada.', 'error')
+    conn.close()
+    
+    return redirect(url_for('reservations'))
+
+# ==================== MOCK AUTH ROUTES ====================
+# These are placeholders so the buttons work. The other group will implement real auth.
+
+@app.route('/login')
+def login():
+    """Mock login"""
+    from flask import session
+    session['user_id'] = 1
+    session['role'] = 'ADMIN' # Default to ADMIN for easy testing
+    flash('Has iniciado sesión (Mock)', 'info')
+    return redirect(url_for('index'))
+
+@app.route('/logout')
+def logout():
+    """Mock logout"""
+    from flask import session
+    session.clear()
+    flash('Has cerrado sesión', 'info')
+    return redirect(url_for('index'))
+
+@app.route('/register')
+def register():
+    """Mock register"""
+    return redirect(url_for('login'))
+
+# ==================== ADMIN ROUTES (Existing) ====================
 
 @app.route('/admin/train/<int:id>/delete', methods=['POST'])
 def delete_train(id):

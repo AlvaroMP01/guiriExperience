@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 
 <head>
     <meta charset="UTF-8">
@@ -148,19 +148,19 @@
 <body>
     <header>
         <div class="header-content">
-            <h1>🎫 Tours Booking</h1>
+            <h1>🎫 Reserva de Tours</h1>
             <nav>
-                <a href="{{ url_for('index') }}">🏠 Home</a>
+                <a href="{{ url_for('index') }}">Inicio</a>
                 {% if session.get('user_id') %}
                 <span class="user-info">{{ session.get('role') }}</span> |
                 {% if session.get('role') in ['ADMIN', 'TOUR_SELLER'] %}
-                <a href="{{ url_for('admin_tours') }}">Admin Panel</a>
+                <a href="{{ url_for('admin') }}">Panel Admin</a>
                 {% endif %}
-                <a href="{{ url_for('reservations') }}">My Reservations</a>
-                <a href="{{ url_for('logout') }}">Logout</a>
+                <a href="{{ url_for('reservations') }}">Mis Reservas</a>
+                <a href="{{ url_for('logout') }}">Cerrar Sesión</a>
                 {% else %}
-                <a href="{{ url_for('login') }}">Login</a>
-                <a href="{{ url_for('register') }}">Register</a>
+                <a href="{{ url_for('login') }}">Iniciar Sesión</a>
+                <a href="{{ url_for('register') }}">Registrarse</a>
                 {% endif %}
             </nav>
         </div>
@@ -169,35 +169,35 @@
     <main>
         <!-- Search Section -->
         <div class="section">
-            <h2>🔍 Search Tours</h2>
+            <h2>🔍 Buscar Tours</h2>
             <div class="search-bar">
-                <input type="text" id="search-name" placeholder="Search by name or guide...">
+                <input type="text" id="search-name" placeholder="Buscar por nombre o guía...">
                 <select id="search-category">
-                    <option value="">All Categories</option>
+                    <option value="">Todas las categorías</option>
                     <option value="cultural">Cultural</option>
-                    <option value="adventure">Adventure</option>
-                    <option value="gastronomic">Gastronomic</option>
-                    <option value="historical">Historical</option>
-                    <option value="nature">Nature</option>
+                    <option value="adventure">Aventura</option>
+                    <option value="gastronomic">Gastronómico</option>
+                    <option value="historical">Histórico</option>
+                    <option value="nature">Naturaleza</option>
                 </select>
                 <input type="date" id="search-date">
-                <button onclick="searchTours()">Search</button>
+                <button onclick="searchTours()">Buscar</button>
             </div>
         </div>
 
         <!-- Tours List -->
         <div class="section">
-            <h2>📋 Available Tours</h2>
+            <h2>📋 Tours Disponibles</h2>
             <table>
                 <thead>
                     <tr>
-                        <th>Name</th>
-                        <th>Category</th>
-                        <th>Guide</th>
-                        <th>Date</th>
-                        <th>Time</th>
-                        <th>Price</th>
-                        <th>Action</th>
+                        <th>Nombre</th>
+                        <th>Categoría</th>
+                        <th>Guía</th>
+                        <th>Fecha</th>
+                        <th>Hora</th>
+                        <th>Precio</th>
+                        <th>Acción</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -210,12 +210,16 @@
                         <td>{{ tour.time }}</td>
                         <td>{{ tour.price }} €</td>
                         <td>
-                            <button class="btn-book" onclick="bookTour({{ tour.id }})">Book Now</button>
+                            <!-- Formulario directo para reservar -->
+                            <form action="{{ url_for('book_tour') }}" method="POST">
+                                <input type="hidden" name="tour_id" value="{{ tour.id }}">
+                                <button type="submit" class="btn-book">Reservar</button>
+                            </form>
                         </td>
                     </tr>
                     {% else %}
                     <tr>
-                        <td colspan="7" style="text-align: center;">No tours available today.</td>
+                        <td colspan="7" style="text-align: center;">No hay tours disponibles hoy.</td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -244,10 +248,6 @@
 
                 row.style.display = show ? '' : 'none';
             });
-        }
-
-        function bookTour(id) {
-            window.location.href = `/tours/${id}/book`;
         }
 
         // Real-time search
