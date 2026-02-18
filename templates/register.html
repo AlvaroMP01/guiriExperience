@@ -1,59 +1,91 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="flex min-h-[calc(100vh-200px)] items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-    <div class="w-full max-w-md space-y-8 bg-white dark:bg-[#2d2417] p-8 rounded-2xl shadow-xl border border-[#eadecd]">
+<div class="flex min-h-[calc(100vh-200px)] items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-gray-50/50">
+    <div class="w-full max-w-md space-y-8 bg-white p-8 rounded-2xl shadow-xl border border-gray-100">
         <div>
-            <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-primary">
-                <span class="material-symbols-outlined text-2xl">person_add</span>
+            <div
+                class="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-secondary text-white shadow-lg shadow-secondary/30 animate-bounce-short">
+                <span class="material-symbols-outlined text-3xl">person_add</span>
             </div>
-            <h2 class="mt-6 text-center text-3xl font-bold tracking-tight text-gray-900 dark:text-white">
+            <h2 class="mt-6 text-center text-3xl font-black tracking-tight text-secondary">
                 Crear Cuenta
             </h2>
-            <p class="mt-2 text-center text-sm text-gray-600 dark:text-gray-400">
-                Únete a la comunidad de Viajes Mundo
+            <p class="mt-2 text-center text-sm text-gray-500">
+                Únete a <span class="font-bold text-primary">GuiriExperience</span> hoy mismo
             </p>
         </div>
         <form class="mt-8 space-y-6" method="POST">
-            <div class="-space-y-px rounded-md shadow-sm">
-                <div class="mb-4">
+            <div class="-space-y-px rounded-md shadow-sm space-y-4">
+                <div>
                     <label for="username" class="sr-only">Usuario</label>
                     <div class="relative">
-                        <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                            <span class="material-symbols-outlined text-gray-400">person</span>
+                        <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
+                            <span class="material-symbols-outlined">person</span>
                         </div>
                         <input id="username" name="username" type="text" required
-                            class="relative block w-full rounded-xl border-0 py-3 pl-10 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:z-10 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 dark:bg-[#1a140b] dark:ring-gray-700 dark:text-white"
+                            class="relative block w-full rounded-xl border-gray-200 py-3 pl-10 text-gray-900 placeholder:text-gray-400 focus:z-10 focus:border-primary focus:ring-primary shadow-sm sm:text-sm sm:leading-6 transition-all"
                             placeholder="Nombre de usuario">
+                    </div>
+                </div>
+                <div>
+                    <label for="email" class="sr-only">Email</label>
+                    <div class="relative">
+                        <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
+                            <span class="material-symbols-outlined">mail</span>
+                        </div>
+                        <input id="email" name="email" type="email" required
+                            class="relative block w-full rounded-xl border-gray-200 py-3 pl-10 text-gray-900 placeholder:text-gray-400 focus:z-10 focus:border-primary focus:ring-primary shadow-sm sm:text-sm sm:leading-6 transition-all"
+                            placeholder="Correo electrónico">
                     </div>
                 </div>
                 <div>
                     <label for="password" class="sr-only">Contraseña</label>
                     <div class="relative">
-                        <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                            <span class="material-symbols-outlined text-gray-400">key</span>
+                        <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
+                            <span class="material-symbols-outlined">key</span>
                         </div>
                         <input id="password" name="password" type="password" required
-                            class="relative block w-full rounded-xl border-0 py-3 pl-10 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:z-10 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 dark:bg-[#1a140b] dark:ring-gray-700 dark:text-white"
+                            class="relative block w-full rounded-xl border-gray-200 py-3 pl-10 text-gray-900 placeholder:text-gray-400 focus:z-10 focus:border-primary focus:ring-primary shadow-sm sm:text-sm sm:leading-6 transition-all"
                             placeholder="Contraseña">
+                    </div>
+                </div>
+
+                <!-- Role Selection -->
+                <div>
+                    <label for="role" class="block text-sm font-bold text-gray-700 mb-2 pl-1">Tipo de Cuenta</label>
+                    <div class="grid grid-cols-2 gap-4">
+                        <label class="cursor-pointer">
+                            <input type="radio" name="role" value="USER" class="peer sr-only" checked>
+                            <div
+                                class="p-3 rounded-xl border-2 border-gray-100 hover:border-gray-200 bg-gray-50 peer-checked:border-primary peer-checked:bg-primary/5 peer-checked:text-primary transition-all text-center">
+                                <span class="font-bold text-sm">Usuario</span>
+                            </div>
+                        </label>
+                        <label class="cursor-pointer">
+                            <input type="radio" name="role" value="PROVIDER" class="peer sr-only">
+                            <div
+                                class="p-3 rounded-xl border-2 border-gray-100 hover:border-gray-200 bg-gray-50 peer-checked:border-primary peer-checked:bg-primary/5 peer-checked:text-primary transition-all text-center">
+                                <span class="font-bold text-sm">Proveedor</span>
+                            </div>
+                        </label>
                     </div>
                 </div>
             </div>
 
             <div>
                 <button type="submit"
-                    class="group relative flex w-full justify-center rounded-full bg-primary px-3 py-3 text-sm font-semibold text-white hover:bg-primary/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary transition-all hover:scale-[1.02]">
-                    <span class="absolute inset-y-0 left-0 flex items-center pl-3">
-                        <span
-                            class="material-symbols-outlined h-5 w-5 text-white/50 group-hover:text-white">person_add</span>
-                    </span>
+                    class="group relative flex w-full justify-center rounded-xl bg-secondary px-3 py-3 text-sm font-bold text-white shadow-lg shadow-secondary/30 hover:bg-secondary/90 hover:scale-[1.02] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-secondary transition-all">
                     Registrarse
                 </button>
             </div>
 
             <div class="text-center text-sm">
-                <a href="{{ url_for('login') }}" class="font-medium text-primary hover:text-primary/80">
-                    ¿Ya tienes cuenta? Inicia sesión aquí
+                <a href="{{ url_for('login') }}"
+                    class="font-medium text-primary hover:text-primary/80 transition-colors">
+                    ¿Ya tienes cuenta? <span
+                        class="font-bold underline decoration-2 decoration-primary/30 hover:decoration-primary">Inicia
+                        sesión</span>
                 </a>
             </div>
         </form>

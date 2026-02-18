@@ -1,283 +1,227 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="container">
-    <div class="admin-header">
-        <h1>Control Panel</h1>
-        <div class="admin-actions">
-            <a href="{{ url_for('add_service', service_type='experience') }}" class="btn">Add Experience</a>
-            <a href="{{ url_for('add_service', service_type='hotel') }}" class="btn">Add Hotel</a>
-            <a href="{{ url_for('add_service', service_type='house') }}" class="btn">Add House</a>
+<div class="py-12 px-6">
+    <div class="mx-auto max-w-7xl">
+        <div class="flex items-center justify-between mb-8">
+            <div>
+                <h1 class="text-3xl font-black text-secondary">Panel de Administración</h1>
+                <p class="text-gray-500">Gestión de Experiencias, Hoteles y Casas</p>
+            </div>
+            <div class="flex gap-3">
+                <a href="{{ url_for('add_service', service_type='experience') }}"
+                    class="px-5 py-2.5 rounded-full bg-primary text-white font-bold shadow-lg shadow-primary/30 hover:scale-105 transition-transform flex items-center gap-2">
+                    <span class="material-symbols-outlined text-sm">add</span> Experiencia
+                </a>
+                <a href="{{ url_for('add_service', service_type='hotel') }}"
+                    class="px-5 py-2.5 rounded-full bg-primary text-white font-bold shadow-lg shadow-primary/30 hover:scale-105 transition-transform flex items-center gap-2">
+                    <span class="material-symbols-outlined text-sm">add</span> Hotel
+                </a>
+                <a href="{{ url_for('add_service', service_type='house') }}"
+                    class="px-5 py-2.5 rounded-full bg-primary text-white font-bold shadow-lg shadow-primary/30 hover:scale-105 transition-transform flex items-center gap-2">
+                    <span class="material-symbols-outlined text-sm">add</span> Casa
+                </a>
+            </div>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <div class="flex gap-8 border-b border-gray-200 mb-8 overflow-x-auto">
+            <button onclick="openTab('experiences')"
+                class="tab-btn active pb-4 text-gray-500 font-bold hover:text-primary border-b-4 border-transparent transition-all flex items-center gap-2 whitespace-nowrap">
+                <span class="material-symbols-outlined">confirmation_number</span> Experiencias
+            </button>
+            <button onclick="openTab('hotels')"
+                class="tab-btn pb-4 text-gray-500 font-bold hover:text-primary border-b-4 border-transparent transition-all flex items-center gap-2 whitespace-nowrap">
+                <span class="material-symbols-outlined">hotel</span> Hoteles
+            </button>
+            <button onclick="openTab('houses')"
+                class="tab-btn pb-4 text-gray-500 font-bold hover:text-primary border-b-4 border-transparent transition-all flex items-center gap-2 whitespace-nowrap">
+                <span class="material-symbols-outlined">cottage</span> Casas
+            </button>
+            <button onclick="openTab('reservations')"
+                class="tab-btn pb-4 text-gray-500 font-bold hover:text-primary border-b-4 border-transparent transition-all flex items-center gap-2 whitespace-nowrap">
+                <span class="material-symbols-outlined">receipt_long</span> Reservas
+            </button>
+        </div>
+
+        <!-- Experiences Tab -->
+        <div id="experiences" class="tab-content active transition-opacity duration-300">
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                <table class="w-full">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-4 text-left text-sm font-bold text-primary">Imagen</th>
+                            <th class="px-6 py-4 text-left text-sm font-bold text-primary">Título</th>
+                            <th class="px-6 py-4 text-left text-sm font-bold text-primary">Precio</th>
+                            <th class="px-6 py-4 text-left text-sm font-bold text-primary">Ubicación</th>
+                            <th class="px-6 py-4 text-right text-sm font-bold text-primary">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-100">
+                        {% for item in experiences %}
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4">
+                                <img src="{{ item.imagen or 'https://via.placeholder.com/50' }}" alt=""
+                                    class="w-12 h-12 rounded-lg object-cover">
+                            </td>
+                            <td class="px-6 py-4 font-semibold text-secondary">{{ item.titulo }}</td>
+                            <td class="px-6 py-4 font-bold text-gray-700">{{ item.precio }}€</td>
+                            <td class="px-6 py-4 text-gray-500">{{ item.ubicacion }}</td>
+                            <td class="px-6 py-4 text-right">
+                                <a href="{{ url_for('edit_service', service_type='experience', id=item.id) }}"
+                                    class="text-blue-500 font-bold hover:underline mr-3">Editar</a>
+                                <a href="{{ url_for('delete_service_g2', service_type='experience', id=item.id) }}"
+                                    class="text-red-500 font-bold hover:underline"
+                                    onclick="return confirm('¿Seguro?')">Eliminar</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Hotels Tab -->
+        <div id="hotels" class="tab-content hidden transition-opacity duration-300">
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                <table class="w-full">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-4 text-left text-sm font-bold text-primary">Imagen</th>
+                            <th class="px-6 py-4 text-left text-sm font-bold text-primary">Nombre</th>
+                            <th class="px-6 py-4 text-left text-sm font-bold text-primary">Estrellas</th>
+                            <th class="px-6 py-4 text-left text-sm font-bold text-primary">Precio/Noche</th>
+                            <th class="px-6 py-4 text-right text-sm font-bold text-primary">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-100">
+                        {% for item in hotels %}
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4">
+                                <img src="{{ item.imagen or 'https://via.placeholder.com/50' }}" alt=""
+                                    class="w-12 h-12 rounded-lg object-cover">
+                            </td>
+                            <td class="px-6 py-4 font-semibold text-secondary">{{ item.nombre }}</td>
+                            <td class="px-6 py-4 text-yellow-500 font-bold">{{ item.estrellas }}⭐</td>
+                            <td class="px-6 py-4 font-bold text-gray-700">{{ item.precio_noche }}€</td>
+                            <td class="px-6 py-4 text-right">
+                                <a href="{{ url_for('edit_service', service_type='hotel', id=item.id) }}"
+                                    class="text-blue-500 font-bold hover:underline mr-3">Editar</a>
+                                <a href="{{ url_for('delete_service_g2', service_type='hotel', id=item.id) }}"
+                                    class="text-red-500 font-bold hover:underline"
+                                    onclick="return confirm('¿Seguro?')">Eliminar</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Houses Tab -->
+        <div id="houses" class="tab-content hidden transition-opacity duration-300">
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                <table class="w-full">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-4 text-left text-sm font-bold text-primary">Imagen</th>
+                            <th class="px-6 py-4 text-left text-sm font-bold text-primary">Nombre</th>
+                            <th class="px-6 py-4 text-left text-sm font-bold text-primary">Habitaciones</th>
+                            <th class="px-6 py-4 text-left text-sm font-bold text-primary">Precio/Día</th>
+                            <th class="px-6 py-4 text-right text-sm font-bold text-primary">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-100">
+                        {% for item in houses %}
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4">
+                                <img src="{{ item.imagen or 'https://via.placeholder.com/50' }}" alt=""
+                                    class="w-12 h-12 rounded-lg object-cover">
+                            </td>
+                            <td class="px-6 py-4 font-semibold text-secondary">{{ item.nombre }}</td>
+                            <td class="px-6 py-4 text-gray-500">{{ item.habitaciones }}</td>
+                            <td class="px-6 py-4 font-bold text-gray-700">{{ item.precio_dia }}€</td>
+                            <td class="px-6 py-4 text-right">
+                                <a href="{{ url_for('edit_service', service_type='house', id=item.id) }}"
+                                    class="text-blue-500 font-bold hover:underline mr-3">Editar</a>
+                                <a href="{{ url_for('delete_service_g2', service_type='house', id=item.id) }}"
+                                    class="text-red-500 font-bold hover:underline"
+                                    onclick="return confirm('¿Seguro?')">Eliminar</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Reservations Tab -->
+        <div id="reservations" class="tab-content hidden transition-opacity duration-300">
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                <table class="w-full">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-4 text-left text-sm font-bold text-primary">ID</th>
+                            <th class="px-6 py-4 text-left text-sm font-bold text-primary">Tipo</th>
+                            <th class="px-6 py-4 text-left text-sm font-bold text-primary">Fecha</th>
+                            <th class="px-6 py-4 text-left text-sm font-bold text-primary">Total</th>
+                            <th class="px-6 py-4 text-left text-sm font-bold text-primary">Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-100">
+                        {% for res in reservations %}
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4 font-mono text-gray-500">#{{ res.id }}</td>
+                            <td class="px-6 py-4 font-medium text-secondary">{{ res.tipo_servicio.capitalize() }}</td>
+                            <td class="px-6 py-4 text-gray-500">{{ res.fecha_inicio }}</td>
+                            <td class="px-6 py-4 font-bold text-primary">{{ res.total }}€</td>
+                            <td class="px-6 py-4">
+                                <span
+                                    class="px-3 py-1 rounded-full text-xs font-bold 
+                                    {% if res.estado == 'CONFIRMED' %}bg-green-100 text-green-700{% elif res.estado == 'PENDING' %}bg-yellow-100 text-yellow-700{% else %}bg-gray-100 text-gray-700{% endif %}">
+                                    {{ res.estado }}
+                                </span>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="5" class="px-6 py-8 text-center text-gray-400">No hay reservas registradas.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 
-    <!-- Flash Messages -->
-    {% with messages = get_flashed_messages(with_categories=true) %}
-    {% if messages %}
-    {% for category, message in messages %}
-    <div class="alert alert-{{ category }}">{{ message }}</div>
-    {% endfor %}
-    {% endif %}
-    {% endwith %}
+    <style>
+        /* Custom active state for tabs */
+        .tab-btn.active {
+            color: #e67e22;
+            /* Primary */
+            border-bottom-color: #2c3e50;
+            /* Secondary */
+        }
+    </style>
 
-    <div class="admin-tabs">
-        <button class="tab-btn active" onclick="openTab('experiences')">Experiences</button>
-        <button class="tab-btn" onclick="openTab('hotels')">Hotels</button>
-        <button class="tab-btn" onclick="openTab('houses')">Houses</button>
-        <button class="tab-btn" onclick="openTab('reservations')">Bookings</button>
-    </div>
+    <script>
+        function openTab(tabId) {
+            // Hide all contents
+            document.querySelectorAll('.tab-content').forEach(c => {
+                c.classList.add('hidden');
+                c.classList.remove('active');
+            });
 
-    <!-- Experiences Tab -->
-    <div id="experiences" class="tab-content active">
-        <div class="table-container">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Image</th>
-                        <th>Title</th>
-                        <th>Price</th>
-                        <th>Location</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for item in experiences %}
-                    <tr>
-                        <td><img src="{{ url_for('static', filename='uploads/' + item.imagen) if item.imagen else 'https://via.placeholder.com/50' }}"
-                                alt=""></td>
-                        <td>{{ item.titulo }}</td>
-                        <td>{{ item.precio }}€</td>
-                        <td>{{ item.ubicacion }}</td>
-                        <td>
-                            <a href="{{ url_for('edit_service', service_type='experience', id=item.id) }}"
-                                class="btn-sm btn-edit">Edit</a>
-                            <a href="{{ url_for('delete_service', service_type='experience', id=item.id) }}"
-                                class="btn-sm btn-delete" onclick="return confirm('Are you sure?')">Delete</a>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    </div>
+            // Deactivate all buttons
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
 
-    <!-- Hotels Tab -->
-    <div id="hotels" class="tab-content">
-        <div class="table-container">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Image</th>
-                        <th>Name</th>
-                        <th>Stars</th>
-                        <th>Price/Night</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for item in hotels %}
-                    <tr>
-                        <td><img src="{{ url_for('static', filename='uploads/' + item.imagen) if item.imagen else 'https://via.placeholder.com/50' }}"
-                                alt=""></td>
-                        <td>{{ item.nombre }}</td>
-                        <td>{{ item.estrellas }}⭐</td>
-                        <td>{{ item.precio_noche }}€</td>
-                        <td>
-                            <a href="{{ url_for('edit_service', service_type='hotel', id=item.id) }}"
-                                class="btn-sm btn-edit">Edit</a>
-                            <a href="{{ url_for('delete_service', service_type='hotel', id=item.id) }}"
-                                class="btn-sm btn-delete" onclick="return confirm('Are you sure?')">Delete</a>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    </div>
+            // Show selected content
+            document.getElementById(tabId).classList.remove('hidden');
+            document.getElementById(tabId).classList.add('active');
 
-    <!-- Houses Tab -->
-    <div id="houses" class="tab-content">
-        <div class="table-container">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Image</th>
-                        <th>Name</th>
-                        <th>Rooms</th>
-                        <th>Price/Day</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for item in houses %}
-                    <tr>
-                        <td><img src="{{ url_for('static', filename='uploads/' + item.imagen) if item.imagen else 'https://via.placeholder.com/50' }}"
-                                alt=""></td>
-                        <td>{{ item.nombre }}</td>
-                        <td>{{ item.habitaciones }}</td>
-                        <td>{{ item.precio_dia }}€</td>
-                        <td>
-                            <a href="{{ url_for('edit_service', service_type='house', id=item.id) }}"
-                                class="btn-sm btn-edit">Edit</a>
-                            <a href="{{ url_for('delete_service', service_type='house', id=item.id) }}"
-                                class="btn-sm btn-delete" onclick="return confirm('Are you sure?')">Delete</a>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-    <!-- Reservations Tab -->
-    <div id="reservations" class="tab-content">
-        <div class="table-container">
-            <table>
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Type</th>
-                        <th>Date</th>
-                        <th>Total</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for res in reservations %}
-                    <tr>
-                        <td>#{{ res.id }}</td>
-                        <td>{{ res.tipo_servicio.capitalize() }}</td>
-                        <td>{{ res.fecha_inicio }}</td>
-                        <td>{{ res.total }}€</td>
-                        <td><span class="badge">{{ res.estado }}</span></td>
-                    </tr>
-                    {% else %}
-                    <tr>
-                        <td colspan="5" style="text-align: center; padding: 2rem;">No bookings found.</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div>
-
-<style>
-    .admin-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 2rem;
-    }
-
-    .admin-actions .btn {
-        margin-left: 0.5rem;
-    }
-
-    .admin-tabs {
-        display: flex;
-        gap: 1rem;
-        margin-bottom: 2rem;
-        border-bottom: 2px solid #eee;
-    }
-
-    .tab-btn {
-        padding: 1rem 2rem;
-        border: none;
-        background: none;
-        cursor: pointer;
-        font-weight: 600;
-        color: #666;
-        transition: 0.3s;
-        border-bottom: 4px solid transparent;
-    }
-
-    .tab-btn.active {
-        color: var(--primary);
-        border-bottom-color: var(--secondary);
-    }
-
-    .tab-content {
-        display: none;
-    }
-
-    .tab-content.active {
-        display: block;
-    }
-
-    .table-container {
-        background: white;
-        border-radius: 15px;
-        box-shadow: var(--shadow);
-        overflow: hidden;
-    }
-
-    table {
-        width: 100%;
-        border-collapse: collapse;
-    }
-
-    th,
-    td {
-        padding: 1.2rem;
-        text-align: left;
-        border-bottom: 1px solid #eee;
-    }
-
-    th {
-        background: #fcfcfc;
-        color: var(--primary);
-    }
-
-    td img {
-        width: 50px;
-        height: 50px;
-        object-fit: cover;
-        border-radius: 8px;
-    }
-
-    .btn-sm {
-        padding: 0.4rem 0.8rem;
-        border-radius: 6px;
-        text-decoration: none;
-        font-size: 0.85rem;
-        font-weight: 600;
-        margin-right: 0.5rem;
-    }
-
-    .btn-edit {
-        background: #3498db;
-        color: white;
-    }
-
-    .btn-delete {
-        background: #e74c3c;
-        color: white;
-    }
-
-    .alert {
-        padding: 1rem;
-        border-radius: 8px;
-        margin-bottom: 1.5rem;
-    }
-
-    .alert-success {
-        background: #d4edda;
-        color: #155724;
-    }
-
-    .alert-danger {
-        background: #f8d7da;
-        color: #721c24;
-    }
-</style>
-
-<script>
-    function openTab(tabId) {
-        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById(tabId).classList.add('active');
-        event.currentTarget.classList.add('active');
-    }
-</script>
-{% endblock %}
+            // Activate button
+            event.currentTarget.classList.add('active');
+        }
+    </script>
+    {% endblock %}

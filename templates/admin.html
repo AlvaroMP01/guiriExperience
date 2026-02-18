@@ -1,776 +1,401 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends 'base.html' %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Panel - GuiriExperience</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f5f5f5;
-        }
-
-        header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 20px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .header-content {
-            max-width: 1600px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        h1 {
-            font-size: 2.5em;
-        }
-
-        nav a {
-            margin-left: 20px;
-            text-decoration: none;
-            color: white;
-            font-weight: 500;
-            transition: opacity 0.3s;
-        }
-
-        nav a:hover {
-            opacity: 0.8;
-        }
-
-        main {
-            max-width: 1600px;
-            margin: 30px auto;
-            padding: 20px;
-        }
-
-        .tabs {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 30px;
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .tab-button {
-            flex: 1;
-            padding: 15px 30px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 1.1em;
-            font-weight: bold;
-            transition: all 0.3s;
-            background: #f0f0f0;
-            color: #333;
-        }
-
-        .tab-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        .tab-button.active {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-        }
-
-        .tab-content {
-            display: none;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        .section {
-            background: white;
-            border-radius: 10px;
-            padding: 30px;
-            margin-bottom: 30px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        h2 {
-            color: #667eea;
-            margin-bottom: 20px;
-            font-size: 1.8em;
-            border-bottom: 3px solid #667eea;
-            padding-bottom: 10px;
-        }
-
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-
-        .stat-card {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 25px;
-            border-radius: 10px;
-            text-align: center;
-        }
-
-        .stat-card h3 {
-            font-size: 2.5em;
-            margin-bottom: 10px;
-        }
-
-        .stat-card p {
-            font-size: 1em;
-            opacity: 0.9;
-        }
-
-        form {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-        }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .form-group.full-width {
-            grid-column: 1 / -1;
-        }
-
-        label {
-            margin-bottom: 5px;
-            font-weight: bold;
-            color: #333;
-        }
-
-        input,
-        select,
-        textarea {
-            padding: 10px;
-            border: 2px solid #ddd;
-            border-radius: 5px;
-            font-size: 1em;
-            font-family: inherit;
-        }
-
-        input:focus,
-        select:focus,
-        textarea:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-
-        .btn-submit {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 15px 30px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1.1em;
-            font-weight: bold;
-            grid-column: 1 / -1;
-        }
-
-        .btn-submit:hover {
-            transform: scale(1.02);
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-
-        th,
-        td {
-            padding: 15px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
-
-        th {
-            background: #667eea;
-            color: white;
-            font-weight: bold;
-        }
-
-        tr:hover {
-            background: #f9f9f9;
-        }
-
-        .btn {
-            padding: 8px 15px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: bold;
-            margin-right: 5px;
-            transition: transform 0.2s;
-        }
-
-        .btn:hover {
-            transform: scale(1.05);
-        }
-
-        .btn-edit {
-            background: #4CAF50;
-            color: white;
-        }
-
-        .btn-delete {
-            background: #f44336;
-            color: white;
-        }
-
-        .btn-view {
-            background: #2196F3;
-            color: white;
-        }
-
-        .search-bar {
-            margin-bottom: 20px;
-            display: flex;
-            gap: 10px;
-        }
-
-        .search-bar input,
-        .search-bar select {
-            padding: 10px;
-            border: 2px solid #ddd;
-            border-radius: 5px;
-            font-size: 1em;
-        }
-
-        .search-bar input {
-            flex: 1;
-        }
-
-        .search-bar button {
-            padding: 10px 20px;
-            background: #667eea;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-
-        .search-bar button:hover {
-            background: #764ba2;
-        }
-    </style>
-</head>
-
-<body>
-    <header>
-        <div class="header-content">
-            <h1>👨‍💼 Admin Panel - GuiriExperience</h1>
-            <nav>
-                <a href="{{ url_for('index') }}">🏠 Home</a>
-                <a href="{{ url_for('tours') }}">Tours</a>
-                <a href="{{ url_for('cruises') }}">Cruises</a>
-                <a href="{{ url_for('buses') }}">Buses</a>
-                <a href="{{ url_for('trains') }}">Trains</a>
-            </nav>
-        </div>
-    </header>
-
-    <main>
-        <!-- Overall Statistics -->
-        <div class="stats">
-            <div class="stat-card">
-                <h3>156</h3>
-                <p>Total Services</p>
+{% block content %}
+<div class="py-12 px-6">
+    <div class="mx-auto max-w-7xl">
+        <div class="flex items-center justify-between mb-8">
+            <div>
+                <h1 class="text-3xl font-black text-secondary">Panel de Gestión de Transporte</h1>
+                <p class="text-gray-500">Administración de Tours y Transportes (Grupo 1)</p>
             </div>
-            <div class="stat-card">
-                <h3>2,847</h3>
-                <p>Total Bookings</p>
-            </div>
-            <div class="stat-card">
-                <h3>142</h3>
-                <p>Active Services</p>
-            </div>
-            <div class="stat-card">
-                <h3>45,230 €</h3>
-                <p>Total Revenue</p>
+
+            <!-- Overall Stats -->
+            <div class="hidden md:flex gap-6">
+                <div class="text-right">
+                    <p class="text-sm text-gray-400 font-bold uppercase tracking-wider">Servicios</p>
+                    <p class="text-2xl font-black text-primary">{{ total_services }}</p>
+                </div>
+                <div class="text-right">
+                    <p class="text-sm text-gray-400 font-bold uppercase tracking-wider">Reservas</p>
+                    <p class="text-2xl font-black text-primary">{{ total_bookings }}</p>
+                </div>
+                <div class="text-right">
+                    <p class="text-sm text-gray-400 font-bold uppercase tracking-wider">Ingresos</p>
+                    <p class="text-2xl font-black text-green-500">{{ total_revenue }} €</p>
+                </div>
             </div>
         </div>
 
-        <!-- Tabs -->
-        <div class="tabs">
-            <button class="tab-button active" onclick="openTab('tours')">🎫 Tours</button>
-            <button class="tab-button" onclick="openTab('cruises')">🚢 Cruises</button>
-            <button class="tab-button" onclick="openTab('buses')">🚌 Buses</button>
-            <button class="tab-button" onclick="openTab('trains')">🚆 Trains</button>
+        <!-- Navigation Tabs -->
+        <div class="flex gap-8 border-b border-gray-200 mb-8 overflow-x-auto">
+            <button onclick="openTab('tours')"
+                class="tab-btn active pb-4 text-gray-500 font-bold hover:text-primary border-b-4 border-transparent transition-all flex items-center gap-2 whitespace-nowrap">
+                <span class="material-symbols-outlined">map</span> Tours
+            </button>
+            <button onclick="openTab('cruises')"
+                class="tab-btn pb-4 text-gray-500 font-bold hover:text-primary border-b-4 border-transparent transition-all flex items-center gap-2 whitespace-nowrap">
+                <span class="material-symbols-outlined">directions_boat</span> Cruceros
+            </button>
+            <button onclick="openTab('buses')"
+                class="tab-btn pb-4 text-gray-500 font-bold hover:text-primary border-b-4 border-transparent transition-all flex items-center gap-2 whitespace-nowrap">
+                <span class="material-symbols-outlined">directions_bus</span> Autobuses
+            </button>
+            <button onclick="openTab('trains')"
+                class="tab-btn pb-4 text-gray-500 font-bold hover:text-primary border-b-4 border-transparent transition-all flex items-center gap-2 whitespace-nowrap">
+                <span class="material-symbols-outlined">train</span> Trenes
+            </button>
         </div>
 
         <!-- TOURS TAB -->
-        <div id="tours" class="tab-content active">
-            <div class="section">
-                <h2>➕ Add New Tour</h2>
-                <form action="{{ url_for('add_tour') }}" method="POST">
-                    <div class="form-group">
-                        <label for="tour_name">Tour Name *</label>
-                        <input type="text" id="tour_name" name="name" required>
+        <div id="tours" class="tab-content active transition-opacity duration-300">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Add Form -->
+                <div class="lg:col-span-1">
+                    <div class="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 sticky top-24">
+                        <h2 class="text-xl font-bold text-secondary mb-4">Añadir Tour</h2>
+                        <form action="{{ url_for('add_tour') }}" method="POST" class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-bold text-gray-700 mb-1">Nombre</label>
+                                <input type="text" name="name" required
+                                    class="w-full rounded-lg border-gray-200 bg-gray-50 focus:border-primary focus:ring-primary">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-bold text-gray-700 mb-1">Categoría</label>
+                                <select name="category" required
+                                    class="w-full rounded-lg border-gray-200 bg-gray-50 focus:border-primary focus:ring-primary">
+                                    <option value="Cultural">Cultural</option>
+                                    <option value="Aventura">Aventura</option>
+                                    <option value="Gastronómico">Gastronómico</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-bold text-gray-700 mb-1">Guía</label>
+                                <input type="text" name="guide" required
+                                    class="w-full rounded-lg border-gray-200 bg-gray-50 focus:border-primary focus:ring-primary">
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-bold text-gray-700 mb-1">Fecha</label>
+                                    <input type="date" name="date" required
+                                        class="w-full rounded-lg border-gray-200 bg-gray-50 focus:border-primary focus:ring-primary">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-bold text-gray-700 mb-1">Hora</label>
+                                    <input type="time" name="time" required
+                                        class="w-full rounded-lg border-gray-200 bg-gray-50 focus:border-primary focus:ring-primary">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-bold text-gray-700 mb-1">Precio (€)</label>
+                                <input type="number" name="price" step="0.01" required
+                                    class="w-full rounded-lg border-gray-200 bg-gray-50 focus:border-primary focus:ring-primary">
+                            </div>
+                            <button type="submit"
+                                class="w-full py-3 bg-secondary text-white font-bold rounded-xl shadow-lg hover:bg-primary transition-colors">
+                                Guardar Tour
+                            </button>
+                        </form>
                     </div>
-                    <div class="form-group">
-                        <label for="tour_category">Category *</label>
-                        <select id="tour_category" name="category" required>
-                            <option value="">-- Select --</option>
-                            <option value="cultural">Cultural</option>
-                            <option value="adventure">Adventure</option>
-                            <option value="gastronomic">Gastronomic</option>
-                            <option value="historical">Historical</option>
-                            <option value="nature">Nature</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="tour_guide">Guide *</label>
-                        <input type="text" id="tour_guide" name="guide" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="tour_date">Date *</label>
-                        <input type="date" id="tour_date" name="date" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="tour_time">Time *</label>
-                        <input type="time" id="tour_time" name="time" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="tour_price">Price (€) *</label>
-                        <input type="number" id="tour_price" name="price" min="0" step="0.01" required>
-                    </div>
-                    <button type="submit" class="btn-submit">Add Tour</button>
-                </form>
-            </div>
-
-            <div class="section">
-                <h2>📋 All Tours</h2>
-                <div class="search-bar">
-                    <input type="text" placeholder="Search tours..." id="search-tours">
-                    <button onclick="searchTable('tours-table', 'search-tours')">Search</button>
                 </div>
-                <table id="tours-table">
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Category</th>
-                            <th>Guide</th>
-                            <th>Date</th>
-                            <th>Time</th>
-                            <th>Price</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- Sample Data for Demo -->
-                        <tr>
-                            <td>Madrid City Tour</td>
-                            <td>Cultural</td>
-                            <td>Carlos García</td>
-                            <td>2024-03-15</td>
-                            <td>10:00</td>
-                            <td>45.00 €</td>
-                            <td>
-                                <button class="btn btn-edit" onclick="editItem('tour', 1)">Edit</button>
-                                <button class="btn btn-delete" onclick="deleteItem('tour', 1)">Delete</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Flamenco Experience</td>
-                            <td>Cultural</td>
-                            <td>María López</td>
-                            <td>2024-03-16</td>
-                            <td>20:00</td>
-                            <td>65.00 €</td>
-                            <td>
-                                <button class="btn btn-edit" onclick="editItem('tour', 2)">Edit</button>
-                                <button class="btn btn-delete" onclick="deleteItem('tour', 2)">Delete</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Tapas & Wine Tour</td>
-                            <td>Gastronomic</td>
-                            <td>Juan Martínez</td>
-                            <td>2024-03-17</td>
-                            <td>19:00</td>
-                            <td>55.00 €</td>
-                            <td>
-                                <button class="btn btn-edit" onclick="editItem('tour', 3)">Edit</button>
-                                <button class="btn btn-delete" onclick="deleteItem('tour', 3)">Delete</button>
-                            </td>
-                        </tr>
-                        <!-- When connected to Flask, use this instead:
-                        {% for tour in tours %}
-                        <tr>
-                            <td>{{ tour.name }}</td>
-                            <td>{{ tour.category }}</td>
-                            <td>{{ tour.guide }}</td>
-                            <td>{{ tour.date }}</td>
-                            <td>{{ tour.time }}</td>
-                            <td>{{ tour.price }} €</td>
-                            <td>
-                                <button class="btn btn-edit" onclick="editItem('tour', {{ tour.id }})">Edit</button>
-                                <button class="btn btn-delete" onclick="deleteItem('tour', {{ tour.id }})">Delete</button>
-                            </td>
-                        </tr>
-                        {% else %}
-                        <tr>
-                            <td colspan="7" style="text-align: center;">No tours available</td>
-                        </tr>
-                        {% endfor %}
-                        -->
-                    </tbody>
-                </table>
+                <!-- List -->
+                <div class="lg:col-span-2">
+                    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                        <div class="overflow-x-auto">
+                            <table class="w-full">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-6 py-4 text-left text-sm font-bold text-primary">Nombre</th>
+                                        <th class="px-6 py-4 text-left text-sm font-bold text-primary">Fecha</th>
+                                        <th class="px-6 py-4 text-left text-sm font-bold text-primary">Guía</th>
+                                        <th class="px-6 py-4 text-left text-sm font-bold text-primary">Precio</th>
+                                        <th class="px-6 py-4 text-right text-sm font-bold text-primary">Acción</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-100">
+                                    {% for tour in tours %}
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="px-6 py-4 font-semibold text-secondary">{{ tour.name }}</td>
+                                        <td class="px-6 py-4 text-sm text-gray-500">{{ tour.date }} {{ tour.time }}</td>
+                                        <td class="px-6 py-4 text-sm text-gray-500">{{ tour.guide }}</td>
+                                        <td class="px-6 py-4 font-bold text-secondary">{{ tour.price }}€</td>
+                                        <td class="px-6 py-4 text-right">
+                                            <button onclick="deleteItem('tour', {{ tour.id }})"
+                                                class="text-red-500 font-bold hover:underline">Eliminar</button>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
         <!-- CRUISES TAB -->
-        <div id="cruises" class="tab-content">
-            <div class="section">
-                <h2>➕ Add New Cruise</h2>
-                <form action="{{ url_for('add_cruise') }}" method="POST">
-                    <div class="form-group">
-                        <label for="cruise_destination">Destination *</label>
-                        <input type="text" id="cruise_destination" name="destination" required>
+        <div id="cruises" class="tab-content hidden transition-opacity duration-300">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Add Form -->
+                <div class="lg:col-span-1">
+                    <div class="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 sticky top-24">
+                        <h2 class="text-xl font-bold text-secondary mb-4">Añadir Crucero</h2>
+                        <form action="{{ url_for('add_cruise') }}" method="POST" class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-bold text-gray-700 mb-1">Destino</label>
+                                <input type="text" name="destination" required
+                                    class="w-full rounded-lg border-gray-200 bg-gray-50 focus:border-primary focus:ring-primary">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-bold text-gray-700 mb-1">Barco</label>
+                                <input type="text" name="ship" required
+                                    class="w-full rounded-lg border-gray-200 bg-gray-50 focus:border-primary focus:ring-primary">
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-bold text-gray-700 mb-1">Salida</label>
+                                    <input type="date" name="departure_date" required
+                                        class="w-full rounded-lg border-gray-200 bg-gray-50 focus:border-primary focus:ring-primary">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-bold text-gray-700 mb-1">Duración (días)</label>
+                                    <input type="number" name="duration" required
+                                        class="w-full rounded-lg border-gray-200 bg-gray-50 focus:border-primary focus:ring-primary">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-bold text-gray-700 mb-1">Precio Base (€)</label>
+                                <input type="number" name="price" step="0.01" required
+                                    class="w-full rounded-lg border-gray-200 bg-gray-50 focus:border-primary focus:ring-primary">
+                            </div>
+                            <button type="submit"
+                                class="w-full py-3 bg-secondary text-white font-bold rounded-xl shadow-lg hover:bg-primary transition-colors">
+                                Guardar Crucero
+                            </button>
+                        </form>
                     </div>
-                    <div class="form-group">
-                        <label for="cruise_ship">Ship *</label>
-                        <input type="text" id="cruise_ship" name="ship" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="cruise_departure">Departure Date *</label>
-                        <input type="date" id="cruise_departure" name="departure_date" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="cruise_duration">Duration (days) *</label>
-                        <input type="number" id="cruise_duration" name="duration" min="1" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="cruise_price">Base Price (€) *</label>
-                        <input type="number" id="cruise_price" name="price" min="0" step="0.01" required>
-                    </div>
-                    <button type="submit" class="btn-submit">Add Cruise</button>
-                </form>
-            </div>
-
-            <div class="section">
-                <h2>📋 All Cruises</h2>
-                <div class="search-bar">
-                    <input type="text" placeholder="Search cruises..." id="search-cruises">
-                    <button onclick="searchTable('cruises-table', 'search-cruises')">Search</button>
                 </div>
-                <table id="cruises-table">
-                    <thead>
-                        <tr>
-                            <th>Destination</th>
-                            <th>Ship</th>
-                            <th>Departure</th>
-                            <th>Duration</th>
-                            <th>Price</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- Sample Data for Demo -->
-                        <tr>
-                            <td>Mediterranean Paradise</td>
-                            <td>Ocean Dream</td>
-                            <td>2024-04-10</td>
-                            <td>7 days</td>
-                            <td>899.00 €</td>
-                            <td>
-                                <button class="btn btn-edit" onclick="editItem('cruise', 1)">Edit</button>
-                                <button class="btn btn-delete" onclick="deleteItem('cruise', 1)">Delete</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Caribbean Adventure</td>
-                            <td>Sea Explorer</td>
-                            <td>2024-05-15</td>
-                            <td>10 days</td>
-                            <td>1299.00 €</td>
-                            <td>
-                                <button class="btn btn-edit" onclick="editItem('cruise', 2)">Edit</button>
-                                <button class="btn btn-delete" onclick="deleteItem('cruise', 2)">Delete</button>
-                            </td>
-                        </tr>
-                        <!-- Flask template (commented for demo):
-                        {% for cruise in cruises %}
-                        <tr>
-                            <td>{{ cruise.destination }}</td>
-                            <td>{{ cruise.ship }}</td>
-                            <td>{{ cruise.departure_date }}</td>
-                            <td>{{ cruise.duration }} days</td>
-                            <td>{{ cruise.price }} €</td>
-                            <td>
-                                <button class="btn btn-edit" onclick="editItem('cruise', {{ cruise.id }})">Edit</button>
-                                <button class="btn btn-delete" onclick="deleteItem('cruise', {{ cruise.id }})">Delete</button>
-                            </td>
-                        </tr>
-                        {% else %}
-                        <tr>
-                            <td colspan="6" style="text-align: center;">No cruises available</td>
-                        </tr>
-                        {% endfor %}
-                        -->
-                    </tbody>
-                </table>
+                <!-- List -->
+                <div class="lg:col-span-2">
+                    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                        <div class="overflow-x-auto">
+                            <table class="w-full">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-6 py-4 text-left text-sm font-bold text-primary">Destino</th>
+                                        <th class="px-6 py-4 text-left text-sm font-bold text-primary">Barco</th>
+                                        <th class="px-6 py-4 text-left text-sm font-bold text-primary">Salida</th>
+                                        <th class="px-6 py-4 text-left text-sm font-bold text-primary">Precio</th>
+                                        <th class="px-6 py-4 text-right text-sm font-bold text-primary">Acción</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-100">
+                                    {% for cruise in cruises %}
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="px-6 py-4 font-semibold text-secondary">{{ cruise.destination }}</td>
+                                        <td class="px-6 py-4 text-sm text-gray-500">{{ cruise.ship }}</td>
+                                        <td class="px-6 py-4 text-sm text-gray-500">{{ cruise.departure_date }}</td>
+                                        <td class="px-6 py-4 font-bold text-secondary">{{ cruise.price }}€</td>
+                                        <td class="px-6 py-4 text-right">
+                                            <button onclick="deleteItem('cruise', {{ cruise.id }})"
+                                                class="text-red-500 font-bold hover:underline">Eliminar</button>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
         <!-- BUSES TAB -->
-        <div id="buses" class="tab-content">
-            <div class="section">
-                <h2>➕ Add New Bus Route</h2>
-                <form action="{{ url_for('add_bus_route') }}" method="POST">
-                    <div class="form-group">
-                        <label for="bus_origin">Origin *</label>
-                        <input type="text" id="bus_origin" name="origin" required>
+        <div id="buses" class="tab-content hidden transition-opacity duration-300">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Add Form -->
+                <div class="lg:col-span-1">
+                    <div class="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 sticky top-24">
+                        <h2 class="text-xl font-bold text-secondary mb-4">Añadir Ruta Bus</h2>
+                        <form action="{{ url_for('add_bus_route') }}" method="POST" class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-bold text-gray-700 mb-1">Origen</label>
+                                <input type="text" name="origin" required
+                                    class="w-full rounded-lg border-gray-200 bg-gray-50 focus:border-primary focus:ring-primary">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-bold text-gray-700 mb-1">Destino</label>
+                                <input type="text" name="destination" required
+                                    class="w-full rounded-lg border-gray-200 bg-gray-50 focus:border-primary focus:ring-primary">
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-bold text-gray-700 mb-1">Salida</label>
+                                    <input type="time" name="departure_time" required
+                                        class="w-full rounded-lg border-gray-200 bg-gray-50 focus:border-primary focus:ring-primary">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-bold text-gray-700 mb-1">Llegada</label>
+                                    <input type="time" name="arrival_time" required
+                                        class="w-full rounded-lg border-gray-200 bg-gray-50 focus:border-primary focus:ring-primary">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-bold text-gray-700 mb-1">Precio (€)</label>
+                                <input type="number" name="price" step="0.01" required
+                                    class="w-full rounded-lg border-gray-200 bg-gray-50 focus:border-primary focus:ring-primary">
+                            </div>
+                            <button type="submit"
+                                class="w-full py-3 bg-secondary text-white font-bold rounded-xl shadow-lg hover:bg-primary transition-colors">
+                                Guardar Ruta
+                            </button>
+                        </form>
                     </div>
-                    <div class="form-group">
-                        <label for="bus_destination">Destination *</label>
-                        <input type="text" id="bus_destination" name="destination" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="bus_departure">Departure Time *</label>
-                        <input type="time" id="bus_departure" name="departure_time" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="bus_arrival">Arrival Time *</label>
-                        <input type="time" id="bus_arrival" name="arrival_time" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="bus_price">Price (€) *</label>
-                        <input type="number" id="bus_price" name="price" min="0" step="0.01" required>
-                    </div>
-                    <button type="submit" class="btn-submit">Add Bus Route</button>
-                </form>
-            </div>
-
-            <div class="section">
-                <h2>📋 All Bus Routes</h2>
-                <div class="search-bar">
-                    <input type="text" placeholder="Search routes..." id="search-buses">
-                    <button onclick="searchTable('buses-table', 'search-buses')">Search</button>
                 </div>
-                <table id="buses-table">
-                    <thead>
-                        <tr>
-                            <th>Origin</th>
-                            <th>Destination</th>
-                            <th>Departure</th>
-                            <th>Arrival</th>
-                            <th>Price</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- Sample Data for Demo -->
-                        <tr>
-                            <td>Madrid</td>
-                            <td>Barcelona</td>
-                            <td>08:00</td>
-                            <td>14:30</td>
-                            <td>35.00 €</td>
-                            <td>
-                                <button class="btn btn-edit" onclick="editItem('bus', 1)">Edit</button>
-                                <button class="btn btn-delete" onclick="deleteItem('bus', 1)">Delete</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Seville</td>
-                            <td>Granada</td>
-                            <td>10:30</td>
-                            <td>13:45</td>
-                            <td>22.00 €</td>
-                            <td>
-                                <button class="btn btn-edit" onclick="editItem('bus', 2)">Edit</button>
-                                <button class="btn btn-delete" onclick="deleteItem('bus', 2)">Delete</button>
-                            </td>
-                        </tr>
-                        <!-- Flask template (commented for demo):
-                        {% for bus in buses %}
-                        <tr>
-                            <td>{{ bus.origin }}</td>
-                            <td>{{ bus.destination }}</td>
-                            <td>{{ bus.departure_time }}</td>
-                            <td>{{ bus.arrival_time }}</td>
-                            <td>{{ bus.price }} €</td>
-                            <td>
-                                <button class="btn btn-edit" onclick="editItem('bus', {{ bus.id }})">Edit</button>
-                                <button class="btn btn-delete" onclick="deleteItem('bus', {{ bus.id }})">Delete</button>
-                            </td>
-                        </tr>
-                        {% else %}
-                        <tr>
-                            <td colspan="6" style="text-align: center;">No bus routes available</td>
-                        </tr>
-                        {% endfor %}
-                        -->
-                    </tbody>
-                </table>
+                <!-- List -->
+                <div class="lg:col-span-2">
+                    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                        <div class="overflow-x-auto">
+                            <table class="w-full">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-6 py-4 text-left text-sm font-bold text-primary">Origen</th>
+                                        <th class="px-6 py-4 text-left text-sm font-bold text-primary">Destino</th>
+                                        <th class="px-6 py-4 text-left text-sm font-bold text-primary">Horario</th>
+                                        <th class="px-6 py-4 text-left text-sm font-bold text-primary">Precio</th>
+                                        <th class="px-6 py-4 text-right text-sm font-bold text-primary">Acción</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-100">
+                                    {% for bus in buses %}
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="px-6 py-4 font-semibold text-secondary">{{ bus.origin }}</td>
+                                        <td class="px-6 py-4 font-semibold text-secondary">{{ bus.destination }}</td>
+                                        <td class="px-6 py-4 text-sm text-gray-500">{{ bus.departure_time }} - {{
+                                            bus.arrival_time }}</td>
+                                        <td class="px-6 py-4 font-bold text-secondary">{{ bus.price }}€</td>
+                                        <td class="px-6 py-4 text-right">
+                                            <button onclick="deleteItem('bus', {{ bus.id }})"
+                                                class="text-red-500 font-bold hover:underline">Eliminar</button>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
         <!-- TRAINS TAB -->
-        <div id="trains" class="tab-content">
-            <div class="section">
-                <h2>➕ Add New Train Route</h2>
-                <form action="{{ url_for('add_train_route') }}" method="POST">
-                    <div class="form-group">
-                        <label for="train_origin">Origin *</label>
-                        <input type="text" id="train_origin" name="origin" required>
+        <div id="trains" class="tab-content hidden transition-opacity duration-300">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Add Form -->
+                <div class="lg:col-span-1">
+                    <div class="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 sticky top-24">
+                        <h2 class="text-xl font-bold text-secondary mb-4">Añadir Ruta Tren</h2>
+                        <form action="{{ url_for('add_train_route') }}" method="POST" class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-bold text-gray-700 mb-1">Origen</label>
+                                <input type="text" name="origin" required
+                                    class="w-full rounded-lg border-gray-200 bg-gray-50 focus:border-primary focus:ring-primary">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-bold text-gray-700 mb-1">Destino</label>
+                                <input type="text" name="destination" required
+                                    class="w-full rounded-lg border-gray-200 bg-gray-50 focus:border-primary focus:ring-primary">
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-bold text-gray-700 mb-1">Salida</label>
+                                    <input type="time" name="departure_time" required
+                                        class="w-full rounded-lg border-gray-200 bg-gray-50 focus:border-primary focus:ring-primary">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-bold text-gray-700 mb-1">Llegada</label>
+                                    <input type="time" name="arrival_time" required
+                                        class="w-full rounded-lg border-gray-200 bg-gray-50 focus:border-primary focus:ring-primary">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-bold text-gray-700 mb-1">Precio (€)</label>
+                                <input type="number" name="price" step="0.01" required
+                                    class="w-full rounded-lg border-gray-200 bg-gray-50 focus:border-primary focus:ring-primary">
+                            </div>
+                            <button type="submit"
+                                class="w-full py-3 bg-secondary text-white font-bold rounded-xl shadow-lg hover:bg-primary transition-colors">
+                                Guardar Ruta
+                            </button>
+                        </form>
                     </div>
-                    <div class="form-group">
-                        <label for="train_destination">Destination *</label>
-                        <input type="text" id="train_destination" name="destination" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="train_departure">Departure Time *</label>
-                        <input type="time" id="train_departure" name="departure_time" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="train_arrival">Arrival Time *</label>
-                        <input type="time" id="train_arrival" name="arrival_time" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="train_price">Base Price (€) *</label>
-                        <input type="number" id="train_price" name="price" min="0" step="0.01" required>
-                    </div>
-                    <button type="submit" class="btn-submit">Add Train Route</button>
-                </form>
-            </div>
-
-            <div class="section">
-                <h2>📋 All Train Routes</h2>
-                <div class="search-bar">
-                    <input type="text" placeholder="Search routes..." id="search-trains">
-                    <button onclick="searchTable('trains-table', 'search-trains')">Search</button>
                 </div>
-                <table id="trains-table">
-                    <thead>
-                        <tr>
-                            <th>Origin</th>
-                            <th>Destination</th>
-                            <th>Departure</th>
-                            <th>Arrival</th>
-                            <th>Price</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- Sample Data for Demo -->
-                        <tr>
-                            <td>Madrid</td>
-                            <td>Valencia</td>
-                            <td>07:30</td>
-                            <td>09:25</td>
-                            <td>42.00 €</td>
-                            <td>
-                                <button class="btn btn-edit" onclick="editItem('train', 1)">Edit</button>
-                                <button class="btn btn-delete" onclick="deleteItem('train', 1)">Delete</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Barcelona</td>
-                            <td>Zaragoza</td>
-                            <td>15:00</td>
-                            <td>16:30</td>
-                            <td>28.00 €</td>
-                            <td>
-                                <button class="btn btn-edit" onclick="editItem('train', 2)">Edit</button>
-                                <button class="btn btn-delete" onclick="deleteItem('train', 2)">Delete</button>
-                            </td>
-                        </tr>
-                        <!-- Flask template (commented for demo):
-                        {% for train in trains %}
-                        <tr>
-                            <td>{{ train.origin }}</td>
-                            <td>{{ train.destination }}</td>
-                            <td>{{ train.departure_time }}</td>
-                            <td>{{ train.arrival_time }}</td>
-                            <td>{{ train.price }} €</td>
-                            <td>
-                                <button class="btn btn-edit" onclick="editItem('train', {{ train.id }})">Edit</button>
-                                <button class="btn btn-delete" onclick="deleteItem('train', {{ train.id }})">Delete</button>
-                            </td>
-                        </tr>
-                        {% else %}
-                        <tr>
-                            <td colspan="6" style="text-align: center;">No train routes available</td>
-                        </tr>
-                        {% endfor %}
-                        -->
-                    </tbody>
-                </table>
+                <!-- List -->
+                <div class="lg:col-span-2">
+                    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                        <div class="overflow-x-auto">
+                            <table class="w-full">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-6 py-4 text-left text-sm font-bold text-primary">Origen</th>
+                                        <th class="px-6 py-4 text-left text-sm font-bold text-primary">Destino</th>
+                                        <th class="px-6 py-4 text-left text-sm font-bold text-primary">Horario</th>
+                                        <th class="px-6 py-4 text-left text-sm font-bold text-primary">Precio</th>
+                                        <th class="px-6 py-4 text-right text-sm font-bold text-primary">Acción</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-100">
+                                    {% for train in trains %}
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="px-6 py-4 font-semibold text-secondary">{{ train.origin }}</td>
+                                        <td class="px-6 py-4 font-semibold text-secondary">{{ train.destination }}</td>
+                                        <td class="px-6 py-4 text-sm text-gray-500">{{ train.departure_time }} - {{
+                                            train.arrival_time }}</td>
+                                        <td class="px-6 py-4 font-bold text-secondary">{{ train.price }}€</td>
+                                        <td class="px-6 py-4 text-right">
+                                            <button onclick="deleteItem('train', {{ train.id }})"
+                                                class="text-red-500 font-bold hover:underline">Eliminar</button>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-    </main>
 
-    <script>
-        function openTab(tabName) {
-            // Hide all tabs
-            const tabs = document.querySelectorAll('.tab-content');
-            tabs.forEach(tab => tab.classList.remove('active'));
+    </div>
+</div>
 
-            // Remove active from all buttons
-            const buttons = document.querySelectorAll('.tab-button');
-            buttons.forEach(btn => btn.classList.remove('active'));
+<style>
+    .tab-btn.active {
+        color: #e67e22;
+        border-bottom-color: #2c3e50;
+    }
+</style>
 
-            // Show selected tab
-            document.getElementById(tabName).classList.add('active');
+<script>
+    function openTab(tabId) {
+        document.querySelectorAll('.tab-content').forEach(c => {
+            c.classList.add('hidden');
+            c.classList.remove('active');
+        });
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
 
-            // Highlight selected button
-            event.target.classList.add('active');
+        document.getElementById(tabId).classList.remove('hidden');
+        document.getElementById(tabId).classList.add('active');
+        event.currentTarget.classList.add('active');
+    }
+
+    function deleteItem(type, id) {
+        if (confirm(`¿Estás seguro de que deseas eliminar este elemento?`)) {
+            fetch(`/admin/${type}/${id}/delete`, {
+                method: 'POST'
+            }).then(response => {
+                if (response.ok) location.reload();
+            });
         }
-
-        function searchTable(tableId, searchId) {
-            const input = document.getElementById(searchId).value.toLowerCase();
-            const table = document.getElementById(tableId);
-            const rows = table.getElementsByTagName('tr');
-
-            for (let i = 1; i < rows.length; i++) {
-                const text = rows[i].textContent.toLowerCase();
-                rows[i].style.display = text.includes(input) ? '' : 'none';
-            }
-        }
-
-        function editItem(type, id) {
-            window.location.href = `/admin/${type}/${id}/edit`;
-        }
-
-        function deleteItem(type, id) {
-            if (confirm(`Are you sure you want to delete this ${type}?`)) {
-                fetch(`/admin/${type}/${id}/delete`, {
-                    method: 'POST'
-                }).then(() => {
-                    location.reload();
-                });
-            }
-        }
-
-        // Real-time search
-        document.getElementById('search-tours')?.addEventListener('input', () => searchTable('tours-table', 'search-tours'));
-        document.getElementById('search-cruises')?.addEventListener('input', () => searchTable('cruises-table', 'search-cruises'));
-        document.getElementById('search-buses')?.addEventListener('input', () => searchTable('buses-table', 'search-buses'));
-        document.getElementById('search-trains')?.addEventListener('input', () => searchTable('trains-table', 'search-trains'));
-    </script>
-</body>
-
-</html>
+    }
+</script>
+{% endblock %}

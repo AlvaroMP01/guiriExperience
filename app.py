@@ -250,6 +250,82 @@ def admin_dashboard():
                            houses=houses,
                            reservations=reservations)
 
+# ==================== GROUP 3 ADMIN ACTIONS (USER MANAGEMENT) ====================
+
+@app.route('/admin/users')
+@login_required
+def user_dashboard():
+    if current_user.role not in ['ADMIN', 'admin']:
+        flash('Access denied', 'error')
+        return redirect(url_for('index'))
+    users = User.query.all()
+    return render_template('admin_users.html', users=users)
+
+@app.route('/admin/users/create', methods=['GET', 'POST'])
+@login_required
+def create_user():
+    if current_user.role not in ['ADMIN', 'admin']:
+        flash('Access denied', 'error')
+        return redirect(url_for('index'))
+        
+    if request.method == 'POST':
+        username = request.form.get('username')
+        email = request.form.get('email')
+        password = request.form.get('password')
+        role = request.form.get('role')
+        
+        if User.query.filter_by(username=username).first():
+            flash('Username already exists', 'error')
+        else:
+            new_user = User(username=username, email=email, password=generate_password_hash(password), role=role)
+            db.session.add(new_user)
+            db.session.commit()
+            flash('User created successfully', 'success')
+            return redirect(url_for('user_dashboard'))
+            
+    return render_template('admin_user_form.html', action='Create')
+
+@app.route('/admin/users/edit/<int:user_id>', methods=['GET', 'POST'])
+@login_required
+def edit_user(user_id):
+    if current_user.role not in ['ADMIN', 'admin']:
+        flash('Access denied', 'error')
+        return redirect(url_for('index'))
+        
+    user = User.query.get_or_404(user_id)
+    
+    if request.method == 'POST':
+        user.username = request.form.get('username')
+        user.email = request.form.get('email')
+        user.role = request.form.get('role')
+        
+        if request.form.get('password'):
+            user.password = generate_password_hash(request.form.get('password'))
+            
+        db.session.commit()
+        flash('User updated successfully', 'success')
+        return redirect(url_for('user_dashboard'))
+        
+    return render_template('admin_user_form.html', action='Edit', user=user)
+
+@app.route('/admin/users/delete/<int:user_id>', methods=['GET', 'POST'])
+@login_required
+def delete_user(user_id):
+    if current_user.role not in ['ADMIN', 'admin']:
+        flash('Access denied', 'error')
+        return redirect(url_for('index'))
+        
+    user = User.query.get_or_404(user_id)
+    if user.id != current_user.id: # Prevent self-deletion
+        db.session.delete(user)
+        db.session.commit()
+        flash('User deleted successfully', 'success')
+    else:
+        flash('Cannot delete yourself', 'error')
+        
+    return redirect(url_for('user_dashboard'))
+
+
 # ==================== GROUP 1 ADMIN ACTIONS ====================
 # (Kept separate for simplicity, could be unified with decorators)
 

@@ -1,127 +1,133 @@
-<!DOCTYPE html>
-<html lang="es">
+{% extends 'base.html' %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tours - GuiriExperience</title>
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
-        rel="stylesheet">
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
-</head>
-
-<body>
-    <header>
-        <div class="header-content">
-            <h1>🎫 Reserva de Tours</h1>
-            <nav>
-                <a href="{{ url_for('index') }}">Inicio</a>
-                {% if session.get('user_id') %}
-                <span class="user-info">{{ session.get('role') }}</span> |
-                {% if session.get('role') in ['ADMIN', 'TOUR_SELLER'] %}
-                <a href="{{ url_for('admin') }}">Panel Admin</a>
-                {% endif %}
-                <a href="{{ url_for('reservations') }}">Mis Reservas</a>
-                <a href="{{ url_for('logout') }}">Cerrar Sesión</a>
-                {% else %}
-                <a href="{{ url_for('login') }}">Iniciar Sesión</a>
-                <a href="{{ url_for('register') }}">Registrarse</a>
-                {% endif %}
-            </nav>
+{% block content %}
+<div class="py-12 px-6">
+    <div class="mx-auto max-w-7xl">
+        <!-- Header & Search -->
+        <div class="mb-10 text-center">
+            <h1 class="text-4xl font-black text-secondary mb-4">🎫 Reserva de Tours</h1>
+            <p class="text-gray-500 text-lg">Descubre los mejores rincones con nuestros guías expertos.</p>
         </div>
-    </header>
 
-    <main>
-        <!-- Search Section -->
-        <div class="section">
-            <h2>🔍 Buscar Tours</h2>
-            <div class="search-bar">
-                <input type="text" id="search-name" placeholder="Buscar por nombre o guía...">
-                <select id="search-category">
-                    <option value="">Todas las categorías</option>
-                    <option value="cultural">Cultural</option>
-                    <option value="adventure">Aventura</option>
-                    <option value="gastronomic">Gastronómico</option>
-                    <option value="historical">Histórico</option>
-                    <option value="nature">Naturaleza</option>
-                </select>
-                <input type="date" id="search-date">
-                <button onclick="searchTours()">Buscar</button>
+        <div class="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 mb-10">
+            <h2 class="text-xl font-bold text-secondary mb-4 flex items-center gap-2">
+                <span class="material-symbols-outlined text-primary">search</span>
+                Buscar Tours
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div class="relative">
+                    <span class="absolute left-3 top-3 text-gray-400 material-symbols-outlined">search</span>
+                    <input type="text" id="search-name" placeholder="Buscar por nombre o guía..."
+                        class="w-full pl-10 pr-4 py-3 rounded-xl bg-gray-50 border-none focus:ring-2 focus:ring-primary/50 text-gray-700 placeholder-gray-400 font-medium transition-all">
+                </div>
+                <div class="relative">
+                    <span class="absolute left-3 top-3 text-gray-400 material-symbols-outlined">category</span>
+                    <select id="search-category"
+                        class="w-full pl-10 pr-4 py-3 rounded-xl bg-gray-50 border-none focus:ring-2 focus:ring-primary/50 text-gray-700 font-medium cursor-pointer transition-all appearance-none">
+                        <option value="">Todas las categorías</option>
+                        <option value="cultural">Cultural</option>
+                        <option value="adventure">Aventura</option>
+                        <option value="gastronomic">Gastronómico</option>
+                        <option value="historical">Histórico</option>
+                        <option value="nature">Naturaleza</option>
+                    </select>
+                </div>
+                <div class="relative">
+                    <span class="absolute left-3 top-3 text-gray-400 material-symbols-outlined">calendar_today</span>
+                    <input type="date" id="search-date"
+                        class="w-full pl-10 pr-4 py-3 rounded-xl bg-gray-50 border-none focus:ring-2 focus:ring-primary/50 text-gray-700 font-medium transition-all">
+                </div>
+                <button onclick="searchTours()"
+                    class="w-full py-3 bg-primary text-white font-bold rounded-xl shadow-lg shadow-primary/30 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2">
+                    Buscar
+                </button>
             </div>
         </div>
 
         <!-- Tours List -->
-        <div class="section">
-            <h2>📋 Tours Disponibles</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Nombre</th>
-                        <th>Categoría</th>
-                        <th>Guía</th>
-                        <th>Fecha</th>
-                        <th>Hora</th>
-                        <th>Precio</th>
-                        <th>Acción</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for tour in tours %}
-                    <tr>
-                        <td>{{ tour.name }}</td>
-                        <td>{{ tour.category }}</td>
-                        <td>{{ tour.guide }}</td>
-                        <td>{{ tour.date }}</td>
-                        <td>{{ tour.time }}</td>
-                        <td>{{ tour.price }} €</td>
-                        <td>
-                            <!-- Formulario directo para reservar -->
-                            <form action="{{ url_for('book_tour') }}" method="POST">
-                                <input type="hidden" name="tour_id" value="{{ tour.id }}">
-                                <button type="submit" class="btn-book">Reservar</button>
-                            </form>
-                        </td>
-                    </tr>
-                    {% else %}
-                    <tr>
-                        <td colspan="7" style="text-align: center;">No hay tours disponibles hoy.</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead class="bg-orange-50/50">
+                        <tr>
+                            <th class="px-6 py-4 text-left text-sm font-bold text-primary">Nombre</th>
+                            <th class="px-6 py-4 text-left text-sm font-bold text-primary">Categoría</th>
+                            <th class="px-6 py-4 text-left text-sm font-bold text-primary">Guía</th>
+                            <th class="px-6 py-4 text-left text-sm font-bold text-primary">Fecha</th>
+                            <th class="px-6 py-4 text-left text-sm font-bold text-primary">Hora</th>
+                            <th class="px-6 py-4 text-left text-sm font-bold text-primary">Precio</th>
+                            <th class="px-6 py-4 text-center text-sm font-bold text-primary">Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-100">
+                        {% for tour in tours %}
+                        <tr class="hover:bg-gray-50 transition-colors group">
+                            <td class="px-6 py-4 font-semibold text-secondary">{{ tour.name }}</td>
+                            <td class="px-6 py-4">
+                                <span class="px-3 py-1 rounded-full text-xs font-bold bg-blue-100 text-blue-700">
+                                    {{ tour.category }}
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 text-sm text-gray-500">{{ tour.guide }}</td>
+                            <td class="px-6 py-4 text-sm text-gray-500">{{ tour.date }}</td>
+                            <td class="px-6 py-4 text-sm text-gray-500">{{ tour.time }}</td>
+                            <td class="px-6 py-4 font-bold text-secondary">{{ tour.price }} €</td>
+                            <td class="px-6 py-4 text-center">
+                                <form action="{{ url_for('book_tour') }}" method="POST">
+                                    <input type="hidden" name="tour_id" value="{{ tour.id }}">
+                                    <button type="submit"
+                                        class="px-5 py-2 rounded-full bg-secondary text-white text-sm font-bold hover:bg-primary transition-colors shadow-md hover:shadow-lg">
+                                        Reservar
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="7" class="px-6 py-12 text-center text-gray-400">
+                                <div class="flex flex-col items-center gap-2">
+                                    <span class="material-symbols-outlined text-4xl">event_busy</span>
+                                    <p>No hay tours disponibles por el momento.</p>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
-    </main>
+    </div>
+</div>
 
-    <script>
-        function searchTours() {
-            const name = document.getElementById('search-name').value.toLowerCase();
-            const category = document.getElementById('search-category').value.toLowerCase();
-            const date = document.getElementById('search-date').value;
+<script>
+    function searchTours() {
+        const name = document.getElementById('search-name').value.toLowerCase();
+        const category = document.getElementById('search-category').value.toLowerCase();
+        const date = document.getElementById('search-date').value;
 
-            const rows = document.querySelectorAll('tbody tr');
+        const rows = document.querySelectorAll('tbody tr');
 
-            rows.forEach(row => {
-                const text = row.textContent.toLowerCase();
-                const rowCategory = row.cells[1]?.textContent.toLowerCase();
-                const rowDate = row.cells[3]?.textContent;
+        rows.forEach(row => {
+            // Check if row is the "No results" row
+            if (row.cells.length === 1) return;
 
-                let show = true;
+            const text = row.textContent.toLowerCase();
+            const rowCategory = row.cells[1]?.textContent.trim().toLowerCase();
+            const rowDate = row.cells[3]?.textContent.trim();
 
-                if (name && !text.includes(name)) show = false;
-                if (category && rowCategory !== category) show = false;
-                if (date && rowDate !== date) show = false;
+            let show = true;
 
-                row.style.display = show ? '' : 'none';
-            });
-        }
+            if (name && !text.includes(name)) show = false;
+            if (category && !rowCategory.includes(category)) show = false;
+            if (date && rowDate !== date) show = false;
 
-        // Real-time search
-        document.getElementById('search-name').addEventListener('input', searchTours);
-        document.getElementById('search-category').addEventListener('change', searchTours);
-        document.getElementById('search-date').addEventListener('change', searchTours);
-    </script>
-</body>
+            row.style.display = show ? '' : 'none';
+        });
+    }
 
-</html>
+    // Real-time search
+    document.getElementById('search-name').addEventListener('input', searchTours);
+    document.getElementById('search-category').addEventListener('change', searchTours);
+    document.getElementById('search-date').addEventListener('change', searchTours);
+</script>
+{% endblock %}
